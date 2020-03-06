@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[12]:
-
-
 from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
 import pymysql
@@ -30,16 +24,3 @@ def index(loc):
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
