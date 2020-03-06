@@ -1,0 +1,22 @@
+.masthead.container-fluid {
+  position: relative;
+  box-sizing: border-box;
+}
+
+.masthead {
+  transition: all 0.25s ease-in-out;
+  background-color: black;
+  /* position: fixed; */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.masthead .logo img {
+  src: local("../images/logo.png");
+  display: block;
+  background-repeat: no-repeat;
+  width: auto;
+  height: 44px;
+}
