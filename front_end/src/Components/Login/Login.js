@@ -40,9 +40,8 @@ class Login extends Component {
 
       const user = await Auth.signIn(this.state.username, this.state.password);
       console.log("obj", user);
-      this.props.auth.setAuthStatus(true);
-      this.props.auth.setUser(user);
-      this.props.history.push("/loginconfirmation");
+       this.props.auth.setUser(user);
+      this.props.history.push("/LoginConfirmation");
     }catch(error){
       let err=null;
       !error.message ? err = {"message":error} : err=error;

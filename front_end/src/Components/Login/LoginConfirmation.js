@@ -40,7 +40,8 @@ class LoginConfirmation extends Component {
                 this.props.auth.user,
               this.state.verificationcode
             );
-            
+            console.log(this.props.auth.user+":test")
+            this.props.auth.setAuthStatus(true);
             this.props.history.push('/');
           }catch(error){
             console.log(error);
