@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
+import FormErrors from "../../FormErrors";
 import Validate from "../../FormValidation";
 import {Auth} from "aws-amplify";
-import FormErrors from "../../FormErrors";
 
-class Login extends Component {
+class ForgotPasswordVerification extends Component {
   state = {
-    username: "",
-    password: "",
+    verificationcode: "",
+    email: "",
+    newpassword: "",
     errors: {
       cognito: null,
       blankfield: false
@@ -22,7 +23,7 @@ class Login extends Component {
     });
   };
 
-  handleSubmit = async event => {
+  passwordVerificationHandler = async event => {
     event.preventDefault();
 
     // Form validation
@@ -35,25 +36,16 @@ class Login extends Component {
     }
 
     // AWS Cognito integration here
-
     try{
-
-      const user = await Auth.signIn(this.state.username, this.state.password);
-      console.log("obj", user);
-      this.props.auth.setAuthStatus(true);
-      this.props.auth.setUser(user);
-      this.props.history.push("/loginconfirmation");
+      await Auth.forgotPasswordSubmit(
+        this.state.email,
+        this.state.verificationcode,
+        this.state.newpassword
+      );
+      this.props.history.push('/PasswordChangeConfirmation');
     }catch(error){
-      let err=null;
-      !error.message ? err = {"message":error} : err=error;
-      this.setState({
-        errors: {
-          ...this.state.errors,
-          cognito: err
-        }
-      })
+      console.log(error);
     }
-
   };
 
   onInputChange = event => {
@@ -67,18 +59,21 @@ class Login extends Component {
     return (
       <section className="section main">
         <div className="container">
+          <p>
+            Please enter the verification code sent to your mail, email address and a new password.
+          </p>
           <FormErrors formerrors={this.state.errors} />
 
-          <form onSubmit={this.handleSubmit}>
+          <form onSubmit={this.passwordVerificationHandler}>
             <div className="field">
               <p className="control">
-                <input 
-                  className="input" 
+                <input
                   type="text"
-                  id="username"
-                  aria-describedby="usernameHelp"
-                  placeholder="Enter username or email"
-                  value={this.state.username}
+                  className="input"
+                  id="verificationcode"
+                  aria-describedby="verificationCodeHelp"
+                  placeholder="Enter verification code"
+                  value={this.state.verificationcode}
                   onChange={this.onInputChange}
                 />
               </p>
@@ -87,10 +82,26 @@ class Login extends Component {
               <p className="control has-icons-left">
                 <input 
                   className="input" 
+                  type="email"
+                  id="email"
+                  aria-describedby="emailHelp"
+                  placeholder="Enter email address"
+                  value={this.state.email}
+                  onChange={this.onInputChange}
+                />
+                <span className="icon is-small is-left">
+                  <i className="fas fa-envelope"></i>
+                </span>
+              </p>
+            </div>
+            <div className="field">
+              <p className="control has-icons-left">
+                <input
                   type="password"
-                  id="password"
-                  placeholder="Password"
-                  value={this.state.password}
+                  className="input"
+                  id="newpassword"
+                  placeholder="New password"
+                  value={this.state.newpassword}
                   onChange={this.onInputChange}
                 />
                 <span className="icon is-small is-left">
@@ -100,13 +111,8 @@ class Login extends Component {
             </div>
             <div className="field">
               <p className="control">
-                <a href="/forgotpassword">Forgot password?</a>
-              </p>
-            </div>
-            <div className="field">
-              <p className="control">
-                <button className="button is-primary">
-                  Login
+                <button className="button is-success">
+                  Submit
                 </button>
               </p>
             </div>
@@ -116,5 +122,4 @@ class Login extends Component {
     );
   }
 }
-
-export default Login;
+export default ForgotPasswordVerification;

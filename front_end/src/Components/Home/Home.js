@@ -1,12 +1,24 @@
 import React, { Component } from "react";
 import { IndexLinkContainer } from "react-router-bootstrap";
 import logo from "../../images/logo.png";
+import { Auth } from 'aws-amplify';
 
 /* This component provides routing functionality between components.
 Contains two childern component 'Athletes' and 'Upload Athletes' 
 */
 
 class Home extends Component {
+  handleLogOut = async event => {
+    event.preventDefault();
+    try{
+      Auth.signOut();
+      this.props.auth.setAuthStatus(false);
+      this.props.auth.setUser(null);
+    }catch(error){
+      console.log(error.message);
+    }
+  }
+
   render() {
     return (
       // Banner with logo
@@ -20,8 +32,23 @@ class Home extends Component {
               </IndexLinkContainer>
             </div>
             <div className="float-right">
-              <button className="btn btn-primary ">Login</button>
+            {!this.props.auth.isAuthenticated && (
+                  <div>
+                     <a href="/SignUp" className="button is-black">
+                        <strong>Sign Up</strong>
+                      </a>
+                      <a href="/login" className="button is-black">
+                        <strong>Log In</strong>
+                      </a>
+                  </div>
+                )}
+                {this.props.auth.isAuthenticated && (
+                  <a href="/" onClick={this.handleLogOut} className="button is-black">
+                    <strong>Log Out</strong>
+                  </a>
+                )}
             </div>
+
             <div className="clearfix"></div>
           </div>
         </header>
