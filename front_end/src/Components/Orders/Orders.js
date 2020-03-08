@@ -1,14 +1,33 @@
 import React, { Component } from "react";
 import "./Orders.css";
+import Service from "../../Service";
 
 class Orders extends Component {
-  // constructor(props){
-  // super(props);
-  // this.state = {};
-  // }
+  constructor(props) {
+    super(props);
+    this.state = { isLoading: false, data: [] };
+    this.service = new Service();
+  }
 
   // componentWillMount(){}
-  // componentDidMount(){}
+  componentDidMount() {
+    console.log(this.props.auth.user);
+    this.service
+      .getOrderDeatils(1)
+      .then(res => {
+        console.log(res);
+        this.setState({ isLoading: false, data: res.data.result });
+      })
+      //Error handling
+      .catch(error => {
+        //data is empty in case of error.
+        this.setState({
+          isLoading: false,
+          data: []
+        });
+      });
+  }
+
   // componentWillUnmount(){}
 
   // componentWillReceiveProps(){}
@@ -17,7 +36,34 @@ class Orders extends Component {
   // componentDidUpdate(){}
 
   render() {
-    return <div>Orders</div>;
+    return (
+      <div className="container">
+        <table className="table table-striped mt-5">
+          <thead>
+            <tr>
+              <th>Order Number</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Source</th>
+              <th>Destination</th>
+              <th>Number of Passengers</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.data.map((row, index) => (
+              <tr key={row.id}>
+                <td>{row.id}</td>
+                <td>{row.date}</td>
+                <td>{row.time}</td>
+                <td>{row.source_id}</td>
+                <td>{row.dest_id}</td>
+                <td>{row.num_passengers}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
   }
 }
 

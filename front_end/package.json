@@ -5,14 +5,12 @@
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.27",
     "@fortawesome/free-solid-svg-icons": "^5.12.1",
+    "@fortawesome/react-fontawesome": "^0.1.9",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-<<<<<<< HEAD
-    "axios": "^0.19.2",
-=======
     "aws-amplify": "^2.2.6",
->>>>>>> c429f69cb9302044424204a22796251babd8b5fa
+    "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "bulma": "^0.8.0",
     "jquery": "^3.4.1",

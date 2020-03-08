@@ -8,5 +8,8 @@ class Service {
   getLocationData = location => {
     return axios.get(base_url + "search/" + location);
   };
+  getOrderDeatils = id => {
+    return axios.get(base_url + "orderDetails/" + id);
+  };
 }
 export default Service;

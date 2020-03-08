@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\Shruthi\Desktop\MS\Cloud\back_end\venv"
+VIRTUAL_ENV="C:\Users\Shruthi\Desktop\Cloud-Computing-Project\back_end\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
