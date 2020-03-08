@@ -13,7 +13,7 @@ class SignUp extends Component {
     name: "",
     dob: "",
     sex: "",
-    phone: "+17828821002",
+    phone: "",
     confirmpassword: "",
     errors: {
       cognito: null,
@@ -129,6 +129,20 @@ class SignUp extends Component {
                   selected={this.state.dob}
                   onChange={this.handleChange}
                 />
+            </div>
+
+            <div className="field">
+              <p className="control">
+                <input
+                  className="input"
+                  type="text"
+                  id="phone"
+                  aria-describedby="Helper"
+                  placeholder="Please Enter the mobile number along with country code"
+                  value={this.state.phone}
+                  onChange={this.onInputChange}
+                />
+              </p>
             </div>
 
             <div className="div field">
