@@ -2,12 +2,15 @@ package com.example.tourismcanada;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,15 +23,26 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
-    private TextView resultTextView;
+    private LocationsAdapter locationsAdapter;
+    private RecyclerView recyclerView;
+    private ArrayList<Location> locationArrayList = new ArrayList<>();
+    private TextView noSearchText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        resultTextView  = (TextView)findViewById(R.id.resultTextView);
         handleIntent(getIntent());
+        recyclerView = findViewById(R.id.recycler_view);
+        noSearchText = findViewById(R.id.no_search_text);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        locationsAdapter = new LocationsAdapter(locationArrayList, this);
+        recyclerView.setAdapter(locationsAdapter);
     }
 
     @Override
@@ -66,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
             SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
                     SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE);
             suggestions.saveRecentQuery(query, null);
+            locationArrayList.clear();
+            noSearchText.setVisibility(View.VISIBLE);
             getApiCall(query);
         }
     }
@@ -76,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             //request() method
             GetAPIRequest getapiRequest=new GetAPIRequest();
             String url="search/"+query;
-            getapiRequest.request(MainActivity.this,fetchGetResultListener,url);
+            getapiRequest.request(MainActivity.this, fetchGetResultListener, url);
             Toast.makeText(MainActivity.this,"GET API called",Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
@@ -95,12 +111,24 @@ public class MainActivity extends AppCompatActivity {
                 if (data != null) {
                     if (data.has("items")) {
                         JSONArray jsonArray = data.getJSONArray("items");
-                        if(jsonArray!=null) {
-                            //Display the result
-                            //Or, You can do whatever you need to
-                            //do with the JSONObject
-                            resultTextView.setText(jsonArray.toString(4));
+                        Log.d("Gaurav: ", " " + jsonArray.length());
+                        if(jsonArray.length() > 0) {
+                            for(int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jobj = jsonArray.getJSONObject(i);
+                                int id = jobj.getInt("id");
+                                String address = jobj.getString("address");
+                                String description = jobj.getString("description");
+                                String highlights = jobj.getString("highlights");
+                                String image = jobj.getString("image");
+                                String name = jobj.getString("name");
+                                String price = jobj.getString("price");
+                                locationArrayList.add(new Location(id, name, address, description, highlights, price, image));
+                            }
+                            noSearchText.setVisibility(View.INVISIBLE);
+                        } else {
+                            noSearchText.setVisibility(View.VISIBLE);
                         }
+                        locationsAdapter.notifyDataSetChanged();
                     }
                 } else {
                     RequestQueueService.showAlert("Error! No data fetched", MainActivity.this);
