@@ -11,5 +11,9 @@ class Service {
   getOrderDeatils = id => {
     return axios.get(base_url + "orderDetails/" + id);
   };
+
+  postUserDetails = user_data => {
+    return axios.post(base_url + "registration/", user_data);
+  };
 }
 export default Service;

@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
-import pymysql
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -8,8 +7,8 @@ CORS(app)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'proj5409test'
-app.config['MYSQL_DB'] = 'proj5409test'
+app.config['MYSQL_PASSWORD'] = 'akshay@1024'
+app.config['MYSQL_DB'] = 'Cloud_5409'
 
 mysql = MySQL(app)
 
@@ -18,6 +17,7 @@ mysql = MySQL(app)
 def hello():
     name = request.args.get("name", "World")
     return f'hi'
+
 
 @app.route('/search/<loc>', methods=['GET'])
 def index(loc):
@@ -28,6 +28,7 @@ def index(loc):
     items = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
     cur.close()
     return {'items':items}
+
 
 @app.route('/orderDetails/<id>', methods=['GET'])
 def getOrderDetails(id):
@@ -40,11 +41,21 @@ def getOrderDetails(id):
     print(result)
     cur.close()
     return {'result':result}
-    
+
+
+@app.route('/registration/', methods=['POST'])
+def insertUserDetails():
+    data = request.get_json()
+    cur = mysql.connection.cursor()
+    cur.execute(
+        'insert into user (name, email, password, dob, sex) values (%s,%s,%s,%s,%s)',(data['name'],data['email'],data['password'],data['dob'],data['sex']))
+    mysql.connection.commit()
+    cur.close()
+    return {'response':"Data successfully inserted in DB"}
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-
-
+    app.run(debug = True, host='0.0.0.0', port=5000)
 
     # https://dba.stackexchange.com/questions/37014/in-what-data-type-should-i-store-an-email-address-in-database
     # https://medium.com/@PyGuyCharles/python-sql-to-json-and-beyond-3e3a36d32853

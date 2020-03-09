@@ -11,6 +11,10 @@ function validateForm(event, state) {
       document.getElementById("name").classList.add("is-danger");
       return { blankfield: true };
     }
+    if (state.hasOwnProperty("dob") && state.dob === "") {
+      document.getElementById("dob").classList.add("is-danger");
+      return { blankfield: true };
+    }
     if (state.hasOwnProperty("phone") && state.phone === "") {
       document.getElementById("phone").classList.add("is-danger");
       return { blankfield: true };
