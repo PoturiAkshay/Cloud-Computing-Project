@@ -11,5 +11,14 @@ class Service {
   getOrderDeatils = id => {
     return axios.get(base_url + "orderDetails/" + id);
   };
+  getAnalytics = () => {
+    return axios.get(base_url + "analytics");
+  };
+  getSources = () => {
+    return axios.get(base_url + "/getSources");
+  };
+  getBuses = (sourceId, destId) => {
+    return axios.get(base_url + "/getBuses/" + sourceId + "/" + destId);
+  };
 }
 export default Service;

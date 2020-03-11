@@ -31,10 +31,10 @@ class Search extends Component {
       showBook: false
     });
   };
-  bookTicket = id => {
+  bookTicket = destId => {
     this.setState({
       showBook: true,
-      id: id
+      destId: destId
     });
   };
 
@@ -91,7 +91,7 @@ class Search extends Component {
         {this.state.showBook && (
           <Book
             // pass properties to child component
-            id={this.state.id}
+            destId={this.state.destId}
             onBack={this.handleBack}
           />
         )}

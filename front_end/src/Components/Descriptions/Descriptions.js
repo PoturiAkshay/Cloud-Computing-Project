@@ -23,7 +23,11 @@ class Descriptions extends Component {
         className="list-group-item container mt-5  col-lg-8 shadow p-3 mb-5 bg-white rounded"
       >
         <h2 className="h2 m-1">{this.props.data.name}</h2>
-        <img className="m-1" src={this.props.data.image}></img>
+        <img
+          className="m-1"
+          src={this.props.data.image}
+          alt={this.props.name}
+        ></img>
         <p>{this.props.data.description}</p>
         <div className="m-4">
           <h4 className="m-1 h4">Highlights</h4>

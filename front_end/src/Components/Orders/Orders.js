@@ -11,11 +11,9 @@ class Orders extends Component {
 
   // componentWillMount(){}
   componentDidMount() {
-    console.log(this.props.auth.user);
     this.service
       .getOrderDeatils(1)
       .then(res => {
-        console.log(res);
         this.setState({ isLoading: false, data: res.data.result });
       })
       //Error handling
@@ -38,6 +36,7 @@ class Orders extends Component {
   render() {
     return (
       <div className="container">
+        <h1 className="h1 float-left mt-5">Order Details</h1>
         <table className="table table-striped mt-5">
           <thead>
             <tr>
