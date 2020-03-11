@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         noSearchText = findViewById(R.id.no_search_text);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        locationsAdapter = new LocationsAdapter(locationArrayList, this);
+        locationsAdapter = new LocationsAdapter(locationArrayList);
         recyclerView.setAdapter(locationsAdapter);
     }
 
@@ -55,14 +55,26 @@ public class MainActivity extends AppCompatActivity {
         assert searchManager != null;
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
-        searchView.setSubmitButtonEnabled(true);
+        searchView.setSubmitButtonEnabled(false);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.menu.menu_search){
-            onSearchRequested();
+        if(item.getItemId() == R.id.menu_analytics){
+            //call Analytics activity from here
+            return true;
+        }
+        if(item.getItemId() == R.id.menu_orders){
+            startActivity(new Intent(this, OrderHistoryActivity.class));
+            return true;
+        }
+        if(item.getItemId() == R.id.menu_login){
+            //call login activity from here
+            return true;
+        }
+        if(item.getItemId() == R.id.menu_search){
+            //onSearchRequested();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -92,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             //request() method
             GetAPIRequest getapiRequest=new GetAPIRequest();
             String url="search/"+query;
-            getapiRequest.request(MainActivity.this, fetchGetResultListener, url);
+            getapiRequest.request(MainActivity.this, fetchSearchResultListener, url);
             Toast.makeText(MainActivity.this,"GET API called",Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
@@ -100,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Implementing interfaces of FetchDataListener for GET api request
-    FetchDataListener fetchGetResultListener=new FetchDataListener() {
+    FetchDataListener fetchSearchResultListener=new FetchDataListener() {
         @Override
         public void onFetchComplete(JSONObject data) {
             //Fetch Complete. Now stop progress bar  or loader
