@@ -1,5 +1,4 @@
 package com.example.tourismcanada;
-
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -48,6 +47,11 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i(TAG, "Login Successful");
                 Log.i(TAG, String.valueOf(userSession));
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("login_button", "hide");
+                intent.putExtras(bundle);
+
                 startActivity(intent);
                 finish();
             }

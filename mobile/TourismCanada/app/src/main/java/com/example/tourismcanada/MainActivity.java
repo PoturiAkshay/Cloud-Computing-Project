@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -15,14 +14,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
+import com.amazonaws.auth.AWSBasicCognitoIdentityProvider;
+import com.amazonaws.mobile.auth.core.IdentityManager;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ArrayList<Location> locationArrayList = new ArrayList<>();
     private TextView noSearchText;
+    private String login_status="";
+    private MenuItem Mlogin,Mlogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +49,18 @@ public class MainActivity extends AppCompatActivity {
         noSearchText = findViewById(R.id.no_search_text);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        locationsAdapter = new LocationsAdapter(locationArrayList, this);
+        locationsAdapter = new LocationsAdapter(locationArrayList);
         recyclerView.setAdapter(locationsAdapter);
+
+        //Get the bundle
+        Bundle bundle = getIntent().getExtras();
+
+        //Extract the data…
+        if (bundle != null) {
+            login_status = bundle.getString("login_button");
+            Log.d("Akshay: ", "test: " + login_status);
+
+        }
     }
 
     @Override
@@ -55,14 +73,45 @@ public class MainActivity extends AppCompatActivity {
         assert searchManager != null;
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
-        searchView.setSubmitButtonEnabled(true);
+        searchView.setSubmitButtonEnabled(false);
+
+        if(login_status.equals("hide")){
+            Mlogin = menu.findItem(R.id.menu_login);
+            Mlogout = menu.findItem(R.id.menu_logout);
+            Mlogin.setVisible(false);
+            Mlogout.setVisible(true);
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.menu.menu_search){
-            onSearchRequested();
+        if(item.getItemId() == R.id.menu_analytics){
+            //call Analytics activity from here
+            return true;
+        }
+        if(item.getItemId() == R.id.menu_orders){
+            //startActivity(new Intent(this, OrderHistoryActivity.class));
+            return true;
+        }
+        if(item.getItemId() == R.id.menu_login){
+
+            startActivity(new Intent(this,LoginActivity.class));
+            return true;
+        }
+        if(item.getItemId() == R.id.menu_logout){
+            Mlogout.setVisible(false);
+            Mlogin.setVisible(true);
+            Log.d("Akshay: ","inside logout");
+
+            AwsCognitoConfig cognitoConfig = new AwsCognitoConfig(MainActivity.this);
+            CognitoUser user = cognitoConfig.getPool().getUser();
+            Log.d("Akshay user details: ",user.toString());
+            user.signOut();
+            return true;
+        }
+        if(item.getItemId() == R.id.menu_search){
+            //onSearchRequested();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -92,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             //request() method
             GetAPIRequest getapiRequest=new GetAPIRequest();
             String url="search/"+query;
-            getapiRequest.request(MainActivity.this, fetchGetResultListener, url);
+            getapiRequest.request(MainActivity.this, fetchSearchResultListener, url);
             Toast.makeText(MainActivity.this,"GET API called",Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
@@ -100,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Implementing interfaces of FetchDataListener for GET api request
-    FetchDataListener fetchGetResultListener=new FetchDataListener() {
+    FetchDataListener fetchSearchResultListener=new FetchDataListener() {
         @Override
         public void onFetchComplete(JSONObject data) {
             //Fetch Complete. Now stop progress bar  or loader

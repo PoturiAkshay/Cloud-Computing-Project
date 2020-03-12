@@ -2,10 +2,13 @@ package com.example.tourismcanada;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
@@ -13,7 +16,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class GetAPIRequest {
+    private Context mContext;
+
     public void request(final Context context, final FetchDataListener listener, final String ApiURL) throws JSONException {
+        mContext = context;
         if (listener != null) {
             //call onFetchStart of the listener to show progress dialog
             listener.onFetchStart();
@@ -21,6 +27,7 @@ public class GetAPIRequest {
         //base server URL
         String baseUrl="http://192.168.1.104:5000/";
         String url = baseUrl + ApiURL;
+        Log.d("Gaurav: ", url);
         JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -45,8 +52,8 @@ public class GetAPIRequest {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.d("Gaurav:", error.toString());
                 if (error instanceof NoConnectionError) {
-                    Log.d("Gaurav:", error.toString());
                     listener.onFetchFailure("Network Connectivity Problem");
                 } else if (error.networkResponse != null && error.networkResponse.data != null) {
                     VolleyError volley_error = new VolleyError(new String(error.networkResponse.data));
@@ -61,7 +68,6 @@ public class GetAPIRequest {
                     if (errorMessage.isEmpty()) {
                         errorMessage = volley_error.getMessage();
                     }
-
                     if (listener != null) listener.onFetchFailure(errorMessage);
                 } else {
                     listener.onFetchFailure("Something went wrong. Please try again later");

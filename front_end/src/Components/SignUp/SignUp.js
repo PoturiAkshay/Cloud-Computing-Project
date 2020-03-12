@@ -121,6 +121,7 @@ class SignUp extends Component {
   };
 
   render() {
+    
     return (
       <section className="section main">
         <div className="container">

@@ -23,11 +23,9 @@ import java.util.concurrent.TimeoutException;
 
 public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.LocationsHolder> {
     private ArrayList<Location> locationList;
-    private Context context;
 
-    public LocationsAdapter(ArrayList<Location> locationList, Context context) {
+    public LocationsAdapter(ArrayList<Location> locationList) {
         this.locationList = locationList;
-        this.context = context;
     }
 
     @NonNull
