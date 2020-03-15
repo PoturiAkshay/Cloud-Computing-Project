@@ -1,27 +1,31 @@
 import React, { Component, useState } from "react";
 import "./Bus.css";
-import Purchase from "./Purchase";
+import Purchase from "../Purchase/Purchase";
 import "../../css/style.css";
 
 class Bus extends Component {
   constructor(props) {
     super(props);
-    this.state = { seats_available: 1, active: false };
+    this.state = { numPass: 1, active: false, activeItem: "" };
   }
-  buyTickets = () => {
-    this.toggleClass();
+  buyTickets = index => {
+    this.props.isActive(index);
+    this.toggleClass(index);
   };
-  toggleClass = () => {
+  toggleClass = index => {
     const currentState = this.state.active;
     this.setState({ active: !currentState });
   };
   handleChange = e => {
     this.setState({
-      seats_available: e.target.value
+      numPass: e.target.value
     });
   };
+
   // componentWillMount(){}
-  // componentDidMount(){}
+  componentDidMount() {
+    console.log(this.props.data);
+  }
   // componentWillUnmount(){}
 
   // componentWillReceiveProps(){}
@@ -34,7 +38,9 @@ class Bus extends Component {
       <li
         key={this.props.data.id}
         className={
-          this.state.active ? "list-group-item  m-3 " : "list-group-item  m-3"
+          this.state.active && this.props.index == this.props.activeIndex
+            ? "list-group-item  m-3 "
+            : "list-group-item  m-3"
         }
       >
         <div className=" m-1 ">
@@ -56,8 +62,8 @@ class Bus extends Component {
                   type="number"
                   id="num_passenger"
                   name="num_passenger"
-                  min={this.state.seats_available}
-                  value={this.state.seats_available}
+                  min={this.state.numPass}
+                  value={this.state.numPass}
                   max={this.props.data.seats}
                   onChange={this.handleChange}
                   required
@@ -70,12 +76,12 @@ class Bus extends Component {
                 Price:{" "}
                 <var>
                   <abbr title="CAD">$</abbr>
-                  {10 * this.state.seats_available}
+                  {10 * this.state.numPass}
                 </var>
               </p>
               <button
                 className="btn btn-outline-primary"
-                onClick={this.buyTickets}
+                onClick={() => this.buyTickets(this.props.index)}
               >
                 Buy Tickets
               </button>
@@ -83,8 +89,18 @@ class Bus extends Component {
           </div>
         </div>
 
-        <div className={this.state.active ? "fadeIn" : "fadeOut"}>
-          <Purchase></Purchase>
+        <div
+          className={
+            this.state.active && this.props.index == this.props.activeIndex
+              ? "fadeIn"
+              : "fadeOut"
+          }
+        >
+          <Purchase
+            busInfo={this.props}
+            date={this.props.date}
+            numPass={this.state.numPass}
+          ></Purchase>
         </div>
       </li>
     );

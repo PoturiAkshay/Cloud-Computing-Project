@@ -91,6 +91,7 @@ class Search extends Component {
         {this.state.showBook && (
           <Book
             // pass properties to child component
+
             destId={this.state.destId}
             onBack={this.handleBack}
           />

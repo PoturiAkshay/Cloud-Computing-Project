@@ -12,7 +12,8 @@ class Book extends Component {
       destId: this.props.id,
       sources: [],
       selectedSource: "",
-      data: []
+      data: [],
+      active: false
     };
     this.service = new Service();
   }
@@ -22,7 +23,7 @@ class Book extends Component {
     this.service
       .getSources()
       .then(res => {
-        this.setState({ isLoading: false, sources: res.data.result });
+        this.setState({ isLoading: false, sources: res.data.result, date: "" });
       })
       //Error handling
       .catch(error => {
@@ -36,7 +37,7 @@ class Book extends Component {
 
   onSubmit = event => {
     event.preventDefault();
-    console.log(event.target.source.value, this.props.destId);
+
     this.service
       .getBuses(event.target.source.value, this.props.destId)
       .then(res => {
@@ -76,7 +77,7 @@ class Book extends Component {
             onClick={() => this.props.onBack()}
           />
         </button>
-        <form onSubmit={this.onSubmit} className="">
+        <form onSubmit={this.onSubmit} className="mt-5">
           <div className="form-group">
             <label htmlFor="source">Select source:</label>
             <select
@@ -94,6 +95,21 @@ class Book extends Component {
               })}
             </select>
           </div>
+          <div className="form-group">
+            <label htmlFor="date">Select date:</label>
+            <input
+              className="form-control"
+              name="date"
+              type="date"
+              required
+              onChange={e => this.setState({ date: e.target.value })}
+              // ref={date => {
+              //   this.dateRef = date;
+              // }}
+              // value={this.state.date}
+              // onChange={this._onDateChange.bind(this)}
+            />
+          </div>
           <button type="submit" className="btn btn-primary">
             See Buses
           </button>
@@ -101,30 +117,18 @@ class Book extends Component {
         {this.state.data.length > 0 && (
           <div className="d-flex justify-content-center col">
             <ul className="list-group col-lg-8 ">
-              {/* <table className="table">
-              <thead>
-                <tr>
-                  <th>Bus Number</th>
-                  <th>Date</th>
-                  <th>Arrival time</th>
-                  <th>Departure time</th>
-                  <th>Seats available</th>
-                  <th>Number of Passengers</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody> */}
               {this.state.data.map((row, index) => (
                 <Bus
                   // pass properties to child component
-                  key={row.id}
+                  key={index}
                   data={row}
-                  onPurchase={this.purchaseTicket}
+                  index={index}
+                  date={this.state.date}
+                  isActive={index => this.setState({ activeItem: index })}
+                  activeIndex={this.state.activeItem}
                 />
               ))}
             </ul>
-            {/* </tbody>
-            </table> */}
           </div>
         )}
       </div>

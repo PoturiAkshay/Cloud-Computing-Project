@@ -15,10 +15,13 @@ class Service {
     return axios.get(base_url + "analytics");
   };
   getSources = () => {
-    return axios.get(base_url + "/getSources");
+    return axios.get(base_url + "getSources");
   };
   getBuses = (sourceId, destId) => {
-    return axios.get(base_url + "/getBuses/" + sourceId + "/" + destId);
+    return axios.get(base_url + "getBuses/" + sourceId + "/" + destId);
+  };
+  makePayment = data => {
+    return axios.post(base_url + "makePayment", data);
   };
 }
 export default Service;
