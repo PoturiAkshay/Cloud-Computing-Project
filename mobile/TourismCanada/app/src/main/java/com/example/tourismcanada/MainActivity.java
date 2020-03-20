@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView noSearchText;
     private String login_status="";
     private MenuItem Mlogin,Mlogout;
-
+    private View rootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         handleIntent(getIntent());
         recyclerView = findViewById(R.id.recycler_view);
         noSearchText = findViewById(R.id.no_search_text);
+        rootView = findViewById(android.R.id.content);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         locationsAdapter = new LocationsAdapter(locationArrayList);
@@ -102,10 +103,15 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if(item.getItemId() == R.id.menu_search){
-            onSearchRequested();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        rootView.requestFocus();
     }
 
     @Override
