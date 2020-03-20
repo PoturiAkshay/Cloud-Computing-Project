@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, request
 from flask_mysqldb import MySQL
 from flask_cors import CORS
 
@@ -16,7 +16,7 @@ mysql = MySQL(app)
 @app.route('/')
 def hello():
     name = request.args.get("name", "World")
-    return f'hi'
+    return 'hi'
 
 
 @app.route('/search/<loc>', methods=['GET'])
