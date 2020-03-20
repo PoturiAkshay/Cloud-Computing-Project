@@ -69,7 +69,7 @@ def get_invoice(sourceId,destId):
     rows=cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
     cur.close()
-    return {'result': result}
+    return jsonify({'result': result})
 
 
 
@@ -81,7 +81,7 @@ def getSources():
     rows=cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
     cur.close()
-    return {'result': result}
+    return jsonify({'result': result})
 
 
 @app.route('/registration/', methods=['POST'])
@@ -159,6 +159,44 @@ def validate_card():
         return render_template("invoice.html", invoice_id=invoice_id, result=result[0])
     else:
         return 'Payment failed. Please check your card details.'
+
+@app.route('/mobileMakePayment',methods=['POST'])
+def mobile_validate_card():
+    user_id=(request.form['userId'])
+    source_id=(request.form['source_id'])
+    dest_id=(request.form['dest_id'])
+    bus_id=request.form['bus_id']
+    price=float(request.form["price"])
+    date=request.form['date']
+    num_passengers=(request.form['numPass'])
+    
+    cardNumber=request.form["cardNumber"]
+    cardName=request.form["cardName"]
+    expiryDate=request.form["expiryDate"]
+    cardCVV=request.form["cvCode"]
+    
+    if(validateCard(cardNumber,expiryDate,cardCVV)):
+        
+        cur=mysql.connection.cursor()
+        cur.execute('''INSERT INTO `trips` ( `user_id`, `source_id`, `dest_id`, `date`,  `num_passengers`, `bus_id`) VALUES (%s, %s, %s, %s,  %s, %s)''',(user_id,source_id,dest_id,date,num_passengers,bus_id))
+        trip_id = cur.lastrowid
+        cur.execute(''' UPDATE bus SET num_bookings = num_bookings+%s WHERE id = %s''',(num_passengers,bus_id))
+        mysql.connection.commit()
+        invoice_id=createInvoice(trip_id, (float(num_passengers)*price))
+        cur.execute(""" select t.date as travel_date,u.name as user,i.date as booking_date ,l1.address  as source, l2.address as destination , t.num_passengers, b.bus_no, b.arr_time, b.dep_time, b.price as unit_price, i.amount as total from  invoice i 
+        inner join trips t on t.id=i.trip_id 
+        inner join bus b on b.id=t.bus_id 
+        inner join location l1 on l1.id=t.source_id 
+        inner join location l2 on l2.id=t.dest_id
+        inner join users u on t.user_id=u.id 
+        where i.invoice_no="""+str(invoice_id))
+        rows=cur.fetchall()
+        #result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
+        #print(result)
+        return jsonify(rows)
+    else:
+        return jsonify(0)
+		
 
 def validateCard(cardNumber,cardDate,cardCVV):
     return (cardNumber=="1111111111111111" and cardDate=="00/00" and cardCVV=="999")

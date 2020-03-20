@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.menu_analytics){
             //call Analytics activity from here
+            startActivity(new Intent(this,analytics.class));
             return true;
         }
         if(item.getItemId() == R.id.menu_orders){
