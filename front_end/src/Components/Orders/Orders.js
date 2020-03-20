@@ -24,6 +24,7 @@ class Orders extends Component {
           data: []
         });
       });
+      //console.log(this.props.auth.email);
   }
 
   // componentWillUnmount(){}
@@ -35,7 +36,11 @@ class Orders extends Component {
 
   render() {
     return (
+     
       <div className="container">
+         {this.props.auth.isAuthenticated && (
+        
+     <div>
         <h1 className="h1 float-left mt-5">Order Details</h1>
         <table className="table table-striped mt-5">
           <thead>
@@ -61,6 +66,13 @@ class Orders extends Component {
             ))}
           </tbody>
         </table>
+        </div>
+         )}
+
+{!this.props.auth.isAuthenticated && (
+ <p>please login to see your order details</p> 
+
+)}
       </div>
     );
   }

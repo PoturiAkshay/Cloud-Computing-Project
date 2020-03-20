@@ -3,12 +3,14 @@ import "./Search.css";
 import Descriptions from "../Descriptions/Descriptions";
 import Service from "../../Service";
 import Book from "../Book/Book";
+
 class Search extends Component {
   constructor(props) {
     super(props);
-    this.state = { data: [], isLoading: false, showBook: false, id: "" };
+    this.state = { data: [], isLoading: false, showBook: false, id: ""};
     this.service = new Service();
   }
+
   handleSubmit = event => {
     event.preventDefault();
 
@@ -48,6 +50,7 @@ class Search extends Component {
   // componentDidUpdate(){}
 
   render() {
+  
     return (
       <div className="container">
         {!this.state.showBook && (
@@ -88,14 +91,21 @@ class Search extends Component {
             </div>
           </div>
         )}
-        {this.state.showBook && (
+        
+        {this.state.showBook && this.props.auth.isAuthenticated && (
           <Book
             // pass properties to child component
 
             destId={this.state.destId}
             onBack={this.handleBack}
+            //{this.props.auth.email}
           />
         )}
+
+        {this.state.showBook && !this.props.auth.isAuthenticated && (
+          this.props.history.push("/Login")
+        )}
+
       </div>
     );
   }

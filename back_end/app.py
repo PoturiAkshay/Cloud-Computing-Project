@@ -89,7 +89,7 @@ def insertUserDetails():
     data = request.get_json()
     cur = mysql.connection.cursor()
     cur.execute(
-        'insert into user (name, email, password, dob, sex) values (%s,%s,%s,%s,%s)',(data['name'],data['email'],data['password'],data['dob'],data['sex']))
+        'insert into users (name, email, password, dob, sex) values (%s,%s,%s,%s,%s)',(data['name'],data['email'],data['password'],data['dob'],data['sex']))
     mysql.connection.commit()
     cur.close()
     return {'response':"Data successfully inserted in DB"}
