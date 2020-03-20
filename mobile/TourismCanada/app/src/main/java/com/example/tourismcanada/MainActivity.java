@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
@@ -83,7 +85,26 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if(item.getItemId() == R.id.menu_orders){
-            startActivity(new Intent(this, OrderHistoryActivity.class));
+            if(Mlogin==null || Mlogin.isVisible()==true){
+
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setMessage("Please login to see your order history");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+
+                //RequestQueueService.showAlert("please login to see your order history", MainActivity.this);
+            }
+
+            else{
+                startActivity(new Intent(this, OrderHistoryActivity.class));
+            }
+
+
             return true;
         }
         if(item.getItemId() == R.id.menu_login){

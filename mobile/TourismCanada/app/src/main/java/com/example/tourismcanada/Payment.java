@@ -36,7 +36,7 @@ public class Payment extends AppCompatActivity {
     Button paymentButton;
     String date;
     private RequestQueue queue;
-    String baseURL = "http://192.168.1.104:5000";
+    String baseURL = "http://192.168.0.3:5000";
     int passengers, user_id, price, source_id, dest_id, bus_id;
 
     @Override
