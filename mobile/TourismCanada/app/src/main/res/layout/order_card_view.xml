@@ -32,7 +32,7 @@
             tools:text="Halifax  ->  Montreal"
             android:ellipsize="end"
             android:textColor="@android:color/black"
-            android:singleLine="true"/>
+            android:singleLine="true" />
 
         <LinearLayout
             android:layout_width="match_parent"

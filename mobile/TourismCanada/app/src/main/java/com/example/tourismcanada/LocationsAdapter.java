@@ -49,6 +49,7 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         final Location location = locationList.get(position);
         holder.setLocationImage(location.getImage_url());
         holder.setLocationDescription(location.getDescription());
+        holder.setLocationHighlights(location.getHighlights());
         holder.setLocationName(location.getName());
         holder.setLocationPrice(location.getPrice());
         holder.setLocationItemClickListener(new LocationItemClickListener() {
@@ -65,6 +66,8 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         private ImageView locationImage;
         private TextView locationName;
         private TextView locationDescription;
+        private TextView locationHighlights;
+
         private TextView locationPrice;
         private LocationItemClickListener locationItemClickListener;
 
@@ -82,8 +85,13 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
             locationImage = itemView.findViewById(R.id.location_image);
             locationName = itemView.findViewById(R.id.location_name);
             locationDescription = itemView.findViewById(R.id.location_description);
+            locationHighlights = itemView.findViewById(R.id.location_highlights);
             locationPrice = itemView.findViewById(R.id.location_price);
             itemView.setOnClickListener(this);
+        }
+
+        public void setLocationHighlights(String highlights) {
+            locationHighlights.setText(highlights);
         }
 
         public void setLocationImage(String url) {

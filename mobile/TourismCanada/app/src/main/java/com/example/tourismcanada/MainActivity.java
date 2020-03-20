@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                                 String image = jobj.getString("image");
                                 String name = jobj.getString("name");
                                 String price = jobj.getString("price");
-                                locationArrayList.add(new Location(id, name, address, description, highlights, price, image));
+                                locationArrayList.add(new Location(id, name, address, description, highlights.trim(), price, image));
                             }
                             noSearchText.setVisibility(View.INVISIBLE);
                         } else {

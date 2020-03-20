@@ -52,7 +52,7 @@
                 android:layout_weight="0.75"
                 android:gravity="start"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:textSize="17sp"
+                android:textSize="19sp"
                 tools:text="Test string" />
 
             <TextView
@@ -76,6 +76,28 @@
             android:layout_marginBottom="8dp"
             android:textSize="14sp"
             tools:text="Test string"/>
+
+        <TextView
+            android:id="@+id/location_highlight_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:text="Key Highlights:"/>
+
+        <TextView
+            android:id="@+id/location_highlights"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="14sp"
+            tools:text="Test string" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
