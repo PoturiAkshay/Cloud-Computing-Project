@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if(item.getItemId() == R.id.menu_orders){
-            //startActivity(new Intent(this, OrderHistoryActivity.class));
+            startActivity(new Intent(this, OrderHistoryActivity.class));
             return true;
         }
         if(item.getItemId() == R.id.menu_login){
