@@ -1,12 +1,10 @@
 from flask import Flask, render_template, request,render_template, jsonify,render_template_string
 from flask_mysqldb import MySQL
-import pymysql
 from flask_cors import CORS
 import plotly
 import plotly.graph_objs as go
 
 import pandas as pd
-import numpy as np
 import json
 
 
@@ -15,8 +13,8 @@ CORS(app)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'proj5409test'
-app.config['MYSQL_DB'] = 'proj5409test'
+app.config['MYSQL_PASSWORD'] = 'akshay@1024'
+app.config['MYSQL_DB'] = 'Cloud_5409'
 
 mysql = MySQL(app)
 
@@ -85,10 +83,16 @@ def getSources():
     cur.close()
     return {'result': result}
 
-    
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
 
+@app.route('/registration/', methods=['POST'])
+def insertUserDetails():
+    data = request.get_json()
+    cur = mysql.connection.cursor()
+    cur.execute(
+        'insert into user (name, email, password, dob, sex) values (%s,%s,%s,%s,%s)',(data['name'],data['email'],data['password'],data['dob'],data['sex']))
+    mysql.connection.commit()
+    cur.close()
+    return {'response':"Data successfully inserted in DB"}
 
 
 def create_plot(data):
@@ -159,7 +163,9 @@ def validate_card():
 def validateCard(cardNumber,cardDate,cardCVV):
     return (cardNumber=="1111111111111111" and cardDate=="00/00" and cardCVV=="999")
          
-    
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
 
 
 

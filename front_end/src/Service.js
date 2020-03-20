@@ -23,5 +23,8 @@ class Service {
   makePayment = data => {
     return axios.post(base_url + "makePayment", data);
   };
+  postUserDetails = user_data => {
+    return axios.post(base_url + "registration/", user_data);
+  };
 }
 export default Service;

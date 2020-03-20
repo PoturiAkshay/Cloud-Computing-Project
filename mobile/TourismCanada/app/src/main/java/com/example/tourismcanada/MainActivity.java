@@ -19,7 +19,7 @@ import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ArrayList<Location> locationArrayList = new ArrayList<>();
     private TextView noSearchText;
+    private String login_status="";
+    private MenuItem Mlogin,Mlogout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         locationsAdapter = new LocationsAdapter(locationArrayList);
         recyclerView.setAdapter(locationsAdapter);
+        //Get the bundle
+        Bundle bundle = getIntent().getExtras();
+
+        //Extract the data…
+        if (bundle != null) {
+            login_status = bundle.getString("login_button");
+        }
     }
 
     @Override
@@ -55,7 +65,13 @@ public class MainActivity extends AppCompatActivity {
         assert searchManager != null;
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
-        searchView.setSubmitButtonEnabled(false);
+        searchView.setSubmitButtonEnabled(true);
+        if(login_status.equals("hide")){
+            Mlogin = menu.findItem(R.id.menu_login);
+            Mlogout = menu.findItem(R.id.menu_logout);
+            Mlogin.setVisible(false);
+            Mlogout.setVisible(true);
+        }
         return true;
     }
 
@@ -66,15 +82,27 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if(item.getItemId() == R.id.menu_orders){
-            startActivity(new Intent(this, OrderHistoryActivity.class));
+            //startActivity(new Intent(this, OrderHistoryActivity.class));
             return true;
         }
         if(item.getItemId() == R.id.menu_login){
-            //call login activity from here
+
+            startActivity(new Intent(this,LoginActivity.class));
+            return true;
+        }
+        if(item.getItemId() == R.id.menu_logout){
+            Mlogout.setVisible(false);
+            Mlogin.setVisible(true);
+            Log.d("Akshay: ","inside logout");
+
+            AwsCognitoConfig cognitoConfig = new AwsCognitoConfig(MainActivity.this);
+            CognitoUser user = cognitoConfig.getPool().getUser();
+            Log.d("Akshay user details: ",user.toString());
+            user.signOut();
             return true;
         }
         if(item.getItemId() == R.id.menu_search){
-            //onSearchRequested();
+            onSearchRequested();
             return true;
         }
         return super.onOptionsItemSelected(item);

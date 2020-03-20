@@ -4,6 +4,7 @@ import Validate from "../../FormValidation";
 import { Auth } from 'aws-amplify';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Service from "../../Service";
 
 class SignUp extends Component {
   
@@ -20,6 +21,11 @@ class SignUp extends Component {
       blankfield: false,
       passwordmatch: false
     }
+  }
+
+  constructor(){
+    super();
+    this.service = new Service();
   }
 
   RemoveErrorState = () => {
@@ -63,6 +69,29 @@ class SignUp extends Component {
       });
       console.log(signUpResponse);
       this.props.history.push("/SignupConfirmation");
+      /////////Sending user data to server
+      const user_data = {
+        email: email,
+        password: password,
+        name: name,
+        dob: dob,
+        sex: sex,
+        phone: phone
+      };
+      this.service
+      .postUserDetails(user_data)
+      .then(res => {
+        console.log(res.data.response);
+      })
+      //Error handling
+      .catch(error => {
+        //data is empty in case of error.
+        this.setState({
+          isLoading: false,
+          data: []
+        });
+      });
+      /////////
     } catch (error) {
       let err = null;
       !error.message ? err = { "message": error } : err = error;
@@ -75,6 +104,8 @@ class SignUp extends Component {
     }
 
   };
+
+  
 
   onInputChange = event => {
     this.setState({
@@ -90,6 +121,7 @@ class SignUp extends Component {
   };
 
   render() {
+    
     return (
       <section className="section main">
         <div className="container">
@@ -125,6 +157,7 @@ class SignUp extends Component {
             <p> Please Enter the date of birth</p>
             <div className="div field">
                 <DatePicker id="dob" className="input"
+                dateFormat="yyyy-mm-dd"
                   maxDate={new Date()}
                   selected={this.state.dob}
                   onChange={this.handleChange}
