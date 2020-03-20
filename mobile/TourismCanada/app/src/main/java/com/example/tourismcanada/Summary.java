@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tourismcanada.R;
 
-public class summary extends AppCompatActivity {
+public class Summary extends AppCompatActivity {
     TextView summary;
     String travel_date,user,booking_date,source,dest,bus_no,arr_time,dep_time;
     int num_pass,unit_price,total;

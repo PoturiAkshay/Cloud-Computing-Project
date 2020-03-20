@@ -1,6 +1,7 @@
 package com.example.tourismcanada;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -23,8 +24,10 @@ import java.util.concurrent.TimeoutException;
 
 public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.LocationsHolder> {
     private ArrayList<Location> locationList;
+    private Context mContext;
 
-    public LocationsAdapter(ArrayList<Location> locationList) {
+    public LocationsAdapter(Context context, ArrayList<Location> locationList) {
+        mContext = context;
         this.locationList = locationList;
     }
 
@@ -48,20 +51,39 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         holder.setLocationDescription(location.getDescription());
         holder.setLocationName(location.getName());
         holder.setLocationPrice(location.getPrice());
+        holder.setLocationItemClickListener(new LocationItemClickListener() {
+            @Override
+            public void onItemClick(View view, int pos) {
+                Intent intent = new Intent(mContext.getApplicationContext(), Booking.class);
+                intent.putExtra("destId", location.getId());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
-    public class LocationsHolder extends RecyclerView.ViewHolder {
+    public class LocationsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView locationImage;
         private TextView locationName;
         private TextView locationDescription;
         private TextView locationPrice;
+        private LocationItemClickListener locationItemClickListener;
 
-        public LocationsHolder(@NonNull View itemView) {
+        @Override
+        public void onClick(View v) {
+            locationItemClickListener.onItemClick(v, getLayoutPosition());
+        }
+
+        private void setLocationItemClickListener(LocationItemClickListener listener) {
+            locationItemClickListener = listener;
+        }
+
+        public LocationsHolder(@NonNull final View itemView) {
             super(itemView);
             locationImage = itemView.findViewById(R.id.location_image);
             locationName = itemView.findViewById(R.id.location_name);
             locationDescription = itemView.findViewById(R.id.location_description);
             locationPrice = itemView.findViewById(R.id.location_price);
+            itemView.setOnClickListener(this);
         }
 
         public void setLocationImage(String url) {

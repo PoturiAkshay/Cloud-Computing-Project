@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         rootView = findViewById(android.R.id.content);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        locationsAdapter = new LocationsAdapter(locationArrayList);
+        locationsAdapter = new LocationsAdapter(this, locationArrayList);
         recyclerView.setAdapter(locationsAdapter);
         //Get the bundle
         Bundle bundle = getIntent().getExtras();
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.menu_analytics){
             //call Analytics activity from here
-            startActivity(new Intent(this,analytics.class));
+            startActivity(new Intent(this, Analytics.class));
             return true;
         }
         if(item.getItemId() == R.id.menu_orders){

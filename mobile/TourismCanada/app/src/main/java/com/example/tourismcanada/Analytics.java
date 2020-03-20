@@ -11,13 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tourismcanada.R;
 
-public class analytics extends AppCompatActivity {
+public class Analytics extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.analytics);
         getIntent();
-        String URL="http://192.168.2.15:5000/analytics";
+        String URL="http://192.168.1.104:5000/analytics";
         WebView browser = (WebView) findViewById(R.id.webviewID);
         WebSettings webSettings = browser.getSettings();
         webSettings.setJavaScriptEnabled(true);

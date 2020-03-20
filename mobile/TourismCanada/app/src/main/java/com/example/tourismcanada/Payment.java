@@ -2,7 +2,6 @@ package com.example.tourismcanada;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,20 +16,16 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.tourismcanada.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class payment extends AppCompatActivity {
+public class Payment extends AppCompatActivity {
     TextView totalPrice;
     EditText cardNoEditText;
     String cardNo;
@@ -41,7 +36,7 @@ public class payment extends AppCompatActivity {
     Button paymentButton;
     String date;
     private RequestQueue queue;
-    String baseURL = "http://192.168.2.15:5000";
+    String baseURL = "http://192.168.1.104:5000";
     int passengers, user_id, price, source_id, dest_id, bus_id;
 
     @Override
@@ -86,7 +81,7 @@ public class payment extends AppCompatActivity {
                         try{
                             JSONArray rows=new JSONArray(response);
                             JSONArray results=rows.getJSONArray(0);
-                            Intent intent =new Intent(payment.this, summary.class);
+                            Intent intent =new Intent(Payment.this, Summary.class);
                             intent.putExtra("travel_date",results.getString(0));
                             intent.putExtra("user",results.getString(1));
                             intent.putExtra("booking_date",results.getString(2));
@@ -101,15 +96,15 @@ public class payment extends AppCompatActivity {
                             startActivity(intent);
                         }catch (JSONException e){
 //                            e.printStackTrace();
-                            Toast.makeText(payment.this,"Payment failed. Please check your card details.",Toast.LENGTH_LONG).show();
+                            Toast.makeText(Payment.this,"Payment failed. Please check your card details.",Toast.LENGTH_LONG).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(payment.this,"Something went wrong. Please try again.",Toast.LENGTH_LONG).show();
-                        Toast.makeText(payment.this,error.toString(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(Payment.this,"Something went wrong. Please try again.",Toast.LENGTH_LONG).show();
+                        Toast.makeText(Payment.this,error.toString(),Toast.LENGTH_LONG).show();
                     }
                 }) {
             @Override

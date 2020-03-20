@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -25,11 +23,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.tourismcanada.R;
-import com.example.tourismcanada.payment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,14 +34,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class booking extends AppCompatActivity {
+public class Booking extends AppCompatActivity {
     Button getBus;
     EditText noOfPassengers;
     EditText date;
     int passengers;
     String sourceName;
     int sourceID,destID=2,user_id=4;
-    String baseURL="http://192.168.2.15:5000";
+    String baseURL="http://192.168.1.104:5000";
     TextView buses;
     private RequestQueue queue;
     ArrayAdapter<String> dataAdapter,listadapter;
@@ -68,7 +63,7 @@ public class booking extends AppCompatActivity {
         day=currentDate.get(Calendar.DAY_OF_MONTH);
         month=currentDate.get(Calendar.MONTH);
         year=currentDate.get(Calendar.YEAR);
-        dataAdapter = new ArrayAdapter<String>(booking.this, android.R.layout.simple_spinner_item, cities);
+        dataAdapter = new ArrayAdapter<String>(Booking.this, android.R.layout.simple_spinner_item, cities);
         final JsonObjectRequest jsonObject1=new JsonObjectRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -126,7 +121,7 @@ public class booking extends AppCompatActivity {
                 buslist.clear();
                 //gotoPayment();
 //                jsonParse();
-                listadapter=new ArrayAdapter<String>(booking.this, android.R.layout.simple_list_item_1,buslist);
+                listadapter=new ArrayAdapter<String>(Booking.this, android.R.layout.simple_list_item_1,buslist);
                 String URL=baseURL+"/getBuses/"+sourceID+"/"+destID;
                 final JsonObjectRequest jsonObject=new JsonObjectRequest(Request.Method.GET, URL, null,
                         new Response.Listener<JSONObject>() {
@@ -190,7 +185,7 @@ public class booking extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog=new DatePickerDialog(booking.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog=new DatePickerDialog(Booking.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         month=month+1;
@@ -203,7 +198,7 @@ public class booking extends AppCompatActivity {
         });
     }
     public void gotoPayment(int i){
-        Intent intent =new Intent(this, payment.class);
+        Intent intent =new Intent(this, Payment.class);
         intent.putExtra("source",sourceid[i]);
         intent.putExtra("dest",dest[i]);
         intent.putExtra("sourcename",sourcename[i]);

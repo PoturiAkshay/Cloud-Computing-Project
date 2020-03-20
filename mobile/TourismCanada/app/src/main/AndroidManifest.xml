@@ -17,16 +17,16 @@
         <activity android:name=".LoginActivity"/>
         <activity android:name=".OrderHistoryActivity"
             android:label="Order History"></activity>
-        <activity android:name=".booking">
-            <!--intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".Booking">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
-        <activity android:name=".payment" android:parentActivityName=".booking"/>
-        <activity android:name=".summary" android:parentActivityName=".payment"/>
-        <activity android:name=".analytics" android:parentActivityName=".MainActivity"/>
+        <activity android:name=".Payment" android:parentActivityName=".Booking"/>
+        <activity android:name=".Summary" android:parentActivityName=".Payment"/>
+        <activity android:name=".Analytics" android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop">
