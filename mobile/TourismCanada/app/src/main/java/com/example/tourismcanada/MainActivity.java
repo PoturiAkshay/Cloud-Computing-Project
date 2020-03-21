@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
@@ -31,28 +33,30 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Location> locationArrayList = new ArrayList<>();
     private TextView noSearchText;
     private String login_status="";
+    private String email_address="";
     private MenuItem Mlogin,Mlogout;
     private View rootView;
 
+    private boolean isAuthenticated = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        handleIntent(getIntent());
-        recyclerView = findViewById(R.id.recycler_view);
-        noSearchText = findViewById(R.id.no_search_text);
-        rootView = findViewById(android.R.id.content);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        locationsAdapter = new LocationsAdapter(this, locationArrayList);
-        recyclerView.setAdapter(locationsAdapter);
+
         //Get the bundle
         Bundle bundle = getIntent().getExtras();
 
         //Extract the data…
         if (bundle != null) {
             login_status = bundle.getString("login_button");
+            email_address = bundle.getString("user_id");
         }
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        handleIntent(getIntent());
+        recyclerView = findViewById(R.id.recycler_view);
+        noSearchText = findViewById(R.id.no_search_text);
+        rootView = findViewById(android.R.id.content);
     }
 
     @Override
@@ -72,6 +76,19 @@ public class MainActivity extends AppCompatActivity {
             Mlogin.setVisible(false);
             Mlogout.setVisible(true);
         }
+
+        if(Mlogin==null || Mlogin.isVisible()==true){
+            isAuthenticated = false;
+        }
+        else{
+            isAuthenticated = true;
+        }
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        locationsAdapter = new LocationsAdapter(this, locationArrayList, email_address, isAuthenticated);
+        recyclerView.setAdapter(locationsAdapter);
+
         return true;
     }
 
@@ -83,7 +100,24 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if(item.getItemId() == R.id.menu_orders){
-            //startActivity(new Intent(this, OrderHistoryActivity.class));
+            if(Mlogin==null || Mlogin.isVisible()==true){
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setMessage("Please login to see your order history");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+
+                //RequestQueueService.showAlert("please login to see your order history", MainActivity.this);
+            }
+            else{
+
+                Log.d("user details: ",email_address);
+                startActivity(new Intent(this, OrderHistoryActivity.class));
+            }
             return true;
         }
         if(item.getItemId() == R.id.menu_login){
@@ -92,6 +126,13 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if(item.getItemId() == R.id.menu_logout){
+            isAuthenticated = false;
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(layoutManager);
+            locationsAdapter = new LocationsAdapter(this, locationArrayList, email_address, isAuthenticated);
+            recyclerView.setAdapter(locationsAdapter);
+
             Mlogout.setVisible(false);
             Mlogin.setVisible(true);
             Log.d("Akshay: ","inside logout");

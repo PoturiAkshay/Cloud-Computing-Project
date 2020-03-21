@@ -42,7 +42,8 @@ public class Booking extends AppCompatActivity {
     int passengers;
     String sourceName;
     int sourceID,destID;
-    String baseURL="http://192.168.1.104:5000",user_id="4";
+    String baseURL="http://192.168.1.104:5000",user_id;
+
     TextView buses;
     private RequestQueue queue;
     ArrayAdapter<String> dataAdapter,listadapter;
@@ -59,6 +60,7 @@ public class Booking extends AppCompatActivity {
         setContentView(R.layout.booking);
         Intent intent=getIntent();
         destID=intent.getIntExtra("destId",2);
+        user_id=intent.getStringExtra("user_id");
         queue= Volley.newRequestQueue(this);
         String URL=baseURL+"/getSources";
         final Spinner source = (Spinner) findViewById(R.id.sourceID);

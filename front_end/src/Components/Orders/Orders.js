@@ -14,7 +14,7 @@ class Orders extends Component {
     this.service
       .getOrderDeatils(1)
       .then(res => {
-        this.setState({ isLoading: false, data: res.data.result });
+        this.setState({ isLoading: false, data: res.data.items });
       })
       //Error handling
       .catch(error => {

@@ -42,7 +42,7 @@ def getOrderDetails(id):
     rows = cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
     cur.close()
-    return {'result':result}
+    return {'items':result}
 
 
 @app.route('/analytics', methods=['GET'])
