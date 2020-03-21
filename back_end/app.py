@@ -11,8 +11,8 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_HOST'] = 'database-1.cev35euj80dg.us-east-1.rds.amazonaws.com'
+app.config['MYSQL_USER'] = 'proj5409'
 app.config['MYSQL_PASSWORD'] = 'proj5409'
 app.config['MYSQL_DB'] = 'new_schema'
 
