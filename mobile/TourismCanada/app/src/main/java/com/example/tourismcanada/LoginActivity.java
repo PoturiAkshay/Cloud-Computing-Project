@@ -53,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("login_button", "hide");
+                bundle.putString("user_id",email.getText().toString());
                 intent.putExtras(bundle);
 
                 startActivity(intent);

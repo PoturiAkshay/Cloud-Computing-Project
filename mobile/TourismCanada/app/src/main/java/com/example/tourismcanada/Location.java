@@ -2,6 +2,7 @@ package com.example.tourismcanada;
 
 public class Location {
     private int id;
+    private int address_id;
     private String name;
     private String address;
     private String description;
@@ -9,8 +10,9 @@ public class Location {
     private String price;
     private String image_url;
 
-    public Location(int id, String name, String address, String description, String highlights, String price, String image_url) {
+    public Location(int id, int address_id, String name, String address, String description, String highlights, String price, String image_url) {
         this.id = id;
+        this.address_id = address_id;
         this.name = name;
         this.address = address;
         this.description = description;
@@ -25,6 +27,14 @@ public class Location {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getAddress_id() {
+        return address_id;
+    }
+
+    public void setAddress_id(int address_id) {
+        this.address_id = address_id;
     }
 
     public String getName() {

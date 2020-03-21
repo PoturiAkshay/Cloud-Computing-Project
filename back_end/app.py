@@ -13,8 +13,9 @@ CORS(app)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'akshay@1024'
-app.config['MYSQL_DB'] = 'Cloud_5409'
+
+app.config['MYSQL_PASSWORD'] = 'root'
+app.config['MYSQL_DB'] = 'cloudproject'
 
 mysql = MySQL(app)
 
@@ -27,7 +28,7 @@ def hello():
 @app.route('/search/<loc>', methods=['GET'])
 def index(loc):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT id, name, price, description, image, address, highlights from location WHERE name LIKE %s OR address LIKE %s OR highlights LIKE %s', ("%"+loc+"%", "%"+loc+"%", "%"+loc+"%"))
+    cur.execute('SELECT id, name, price, description, image, address, highlights, address_id from location WHERE name LIKE %s OR address LIKE %s OR highlights LIKE %s', ("%"+loc+"%", "%"+loc+"%", "%"+loc+"%"))
     mysql.connection.commit()
     rows = cur.fetchall()
     items = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
@@ -37,7 +38,7 @@ def index(loc):
 @app.route('/orderDetails/<id>', methods=['GET'])
 def getOrderDetails(id):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT t.id as id, l1.address as source_id, l2.address as dest_id , t.date,t.time, t.num_passengers FROM trips t INNER JOIN location l1 ON l1.id=t.source_id INNER JOIN location l2 ON l2.id=t.dest_id where  t.user_id='+id)
+    cur.execute('SELECT t.id as id, a1.name as source_id, a2.name as dest_id , t.date,t.time, t.num_passengers FROM trips t INNER JOIN address a1 ON a1.id=t.source_id INNER JOIN address a2 ON a2.id=t.dest_id where  t.user_id='+id)
     mysql.connection.commit()
     rows = cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
@@ -48,7 +49,7 @@ def getOrderDetails(id):
 @app.route('/analytics', methods=['GET'])
 def getAnalytics():
     cur = mysql.connection.cursor()
-    cur.execute('select l1.address as city, t.date,count(*) as num_trips from trips t INNER JOIN location l1 ON l1.id=t.dest_id where t.dest_id  group by t.date,t.dest_id')
+    cur.execute('select a1.name as city, t.date,count(*) as num_trips from trips t INNER JOIN address a1 ON a1.id=t.dest_id where t.dest_id  group by t.date,t.dest_id')
     mysql.connection.commit()
     rows = cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
@@ -62,8 +63,8 @@ def getAnalytics():
 def get_invoice(sourceId,destId):
     cur = mysql.connection.cursor()
     # cur.execute('select id,bus_no, arr_time,dep_time,capacity - num_bookings as seats from bus where source_id=%s and dest_id=%s and capacity <> num_bookings' %(sourceId,destId))
-    cur.execute('''select b.id, l1.id as src_id, l2.id as dest_id ,l1.address as src,l2.address as dest,bus_no, arr_time,dep_time,(capacity - num_bookings) 
-    as seats, b.price from bus b INNER JOIN location l1 ON l1.id=b.source_id INNER JOIN location l2 ON l2.id=b.dest_id 
+    cur.execute('''select b.id, a1.id as src_id, a2.id as dest_id ,a1.name as src,a2.name as dest,bus_no, arr_time,dep_time,(capacity - num_bookings) 
+    as seats, b.price from bus b INNER JOIN address a1 ON a1.id=b.source_id INNER JOIN address a2 ON a2.id=b.dest_id 
     where source_id=%s and dest_id=%s and capacity <> num_bookings''' %(sourceId,destId))
     mysql.connection.commit()
     rows=cur.fetchall()
@@ -76,7 +77,7 @@ def get_invoice(sourceId,destId):
 @app.route('/getSources', methods=['GET'])
 def getSources():
     cur = mysql.connection.cursor()
-    cur.execute('select id as sourceId, name from location')
+    cur.execute('select id as sourceId, name from address')
     mysql.connection.commit()
     rows=cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
@@ -146,11 +147,11 @@ def validate_card():
         cur.execute(''' UPDATE bus SET num_bookings = num_bookings+%s WHERE id = %s''',(num_passengers,bus_id))
         mysql.connection.commit()
         invoice_id=createInvoice(trip_id, (float(num_passengers)*price))
-        cur.execute(""" select t.date as travel_date,u.name as user,i.date as booking_date ,l1.address  as source, l2.address as destination , t.num_passengers, b.bus_no, b.arr_time, b.dep_time, b.price as unit_price, i.amount as total from  invoice i 
+        cur.execute(""" select t.date as travel_date,u.name as user,i.date as booking_date ,a1.name  as source, a2.name as destination , t.num_passengers, b.bus_no, b.arr_time, b.dep_time, b.price as unit_price, i.amount as total from  invoice i 
         inner join trips t on t.id=i.trip_id 
         inner join bus b on b.id=t.bus_id 
-        inner join location l1 on l1.id=t.source_id 
-        inner join location l2 on l2.id=t.dest_id
+        inner join address a1 on a1.id=t.source_id 
+        inner join address a2 on a2.id=t.dest_id
         inner join users u on t.user_id=u.id 
         where i.invoice_no="""+str(invoice_id))
         rows=cur.fetchall()
@@ -183,11 +184,11 @@ def mobile_validate_card():
         cur.execute(''' UPDATE bus SET num_bookings = num_bookings+%s WHERE id = %s''',(num_passengers,bus_id))
         mysql.connection.commit()
         invoice_id=createInvoice(trip_id, (float(num_passengers)*price))
-        cur.execute(""" select t.date as travel_date,u.name as user,i.date as booking_date ,l1.address  as source, l2.address as destination , t.num_passengers, b.bus_no, b.arr_time, b.dep_time, b.price as unit_price, i.amount as total from  invoice i 
+        cur.execute(""" select t.date as travel_date,u.name as user,i.date as booking_date ,a1.name  as source, a2.name as destination , t.num_passengers, b.bus_no, b.arr_time, b.dep_time, b.price as unit_price, i.amount as total from  invoice i 
         inner join trips t on t.id=i.trip_id 
         inner join bus b on b.id=t.bus_id 
-        inner join location l1 on l1.id=t.source_id 
-        inner join location l2 on l2.id=t.dest_id
+        inner join address a1 on a1.id=t.source_id 
+        inner join address a2 on a2.id=t.dest_id
         inner join users u on t.user_id=u.id 
         where i.invoice_no="""+str(invoice_id))
         rows=cur.fetchall()

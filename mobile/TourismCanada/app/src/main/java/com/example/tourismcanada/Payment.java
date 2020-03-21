@@ -36,8 +36,9 @@ public class Payment extends AppCompatActivity {
     Button paymentButton;
     String date;
     private RequestQueue queue;
-    String baseURL = "http://192.168.1.104:5000";
-    int passengers, user_id, price, source_id, dest_id, bus_id;
+    String baseURL = "http://192.168.1.104:5000",user_id;
+    int passengers, price, source_id, dest_id, bus_id;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class Payment extends AppCompatActivity {
         setContentView(R.layout.payment);
         Intent intent = getIntent();
         passengers = intent.getIntExtra("passengers", 0);
-        user_id = intent.getIntExtra("user_id", 0);
+        user_id = intent.getStringExtra("user_id");
         price = intent.getIntExtra("price", 0);
         source_id = intent.getIntExtra("source", 0);
         dest_id = intent.getIntExtra("dest", 0);
@@ -110,7 +111,7 @@ public class Payment extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("userId", String.valueOf(user_id));
+                params.put("userId", user_id);
                 params.put("source_id", String.valueOf(source_id));
                 params.put("dest_id", String.valueOf(dest_id));
                 params.put("bus_id", String.valueOf(bus_id));

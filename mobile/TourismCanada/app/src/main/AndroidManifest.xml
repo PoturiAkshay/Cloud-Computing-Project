@@ -17,7 +17,7 @@
         <activity android:name=".LoginActivity"/>
         <activity android:name=".OrderHistoryActivity"
             android:label="Order History"></activity>
-        <activity android:name=".Booking">
+        <activity android:name=".Booking" android:parentActivityName=".MainActivity">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 

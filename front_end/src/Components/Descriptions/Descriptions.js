@@ -39,7 +39,7 @@ class Descriptions extends Component {
 
         <button
           className="btn btn-info btn-lg m-1 btn-lg"
-          onClick={() => this.props.onBook(this.props.data.id)}
+          onClick={() => this.props.onBook(this.props.data.address_id)}
         >
           Book
         </button>
