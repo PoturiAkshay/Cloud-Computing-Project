@@ -51,9 +51,9 @@ class Bus extends Component {
               </h4>
 
               <span className=" text-left h4">
-                {this.props.data.src} <i>({this.props.data.arr_time})</i>
+                {this.props.data.src} <i>({this.props.data.dep_time})</i>
                 ->
-                {this.props.data.dest} <i>({this.props.data.dep_time})</i>{" "}
+                {this.props.data.dest} <i>({this.props.data.arr_time})</i>{" "}
               </span>
 
               <p className="text-left">

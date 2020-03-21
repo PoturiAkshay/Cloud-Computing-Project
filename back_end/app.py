@@ -13,8 +13,8 @@ CORS(app)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root'
-app.config['MYSQL_DB'] = 'cloudproject'
+app.config['MYSQL_PASSWORD'] = 'proj5409'
+app.config['MYSQL_DB'] = 'new_schema'
 
 mysql = MySQL(app)
 
@@ -37,7 +37,7 @@ def index(loc):
 @app.route('/orderDetails/<id>', methods=['GET'])
 def getOrderDetails(id):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT t.id as id, a1.name as source_id, a2.name as dest_id , t.date,t.time, t.num_passengers FROM trips t INNER JOIN address a1 ON a1.id=t.source_id INNER JOIN address a2 ON a2.id=t.dest_id where  t.user_id='+id)
+    cur.execute('SELECT t.id as id, a1.name as source_id, a2.name as dest_id , t.date, t.num_passengers FROM trips t INNER JOIN address a1 ON a1.id=t.source_id INNER JOIN address a2 ON a2.id=t.dest_id where  t.user_id='+id)
     mysql.connection.commit()
     rows = cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]

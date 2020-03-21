@@ -47,7 +47,6 @@ class Orders extends Component {
             <tr>
               <th>Order Number</th>
               <th>Date</th>
-              <th>Time</th>
               <th>Source</th>
               <th>Destination</th>
               <th>Number of Passengers</th>
@@ -58,7 +57,6 @@ class Orders extends Component {
               <tr key={row.id}>
                 <td>{row.id}</td>
                 <td>{row.date}</td>
-                <td>{row.time}</td>
                 <td>{row.source_id}</td>
                 <td>{row.dest_id}</td>
                 <td>{row.num_passengers}</td>
