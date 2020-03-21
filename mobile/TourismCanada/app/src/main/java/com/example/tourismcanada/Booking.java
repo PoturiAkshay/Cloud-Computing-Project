@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -40,8 +41,8 @@ public class Booking extends AppCompatActivity {
     EditText date;
     int passengers;
     String sourceName;
-    int sourceID,destID=2,user_id=4;
-    String baseURL="http://192.168.1.104:5000";
+    int sourceID,destID;
+    String baseURL="http://192.168.1.104:5000",user_id="4";
     TextView buses;
     private RequestQueue queue;
     ArrayAdapter<String> dataAdapter,listadapter;
@@ -56,6 +57,8 @@ public class Booking extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.booking);
+        Intent intent=getIntent();
+        destID=intent.getIntExtra("destId",2);
         queue= Volley.newRequestQueue(this);
         String URL=baseURL+"/getSources";
         final Spinner source = (Spinner) findViewById(R.id.sourceID);
@@ -95,7 +98,7 @@ public class Booking extends AppCompatActivity {
                                 }
                             });
                         }else{
-                                System.out.println("################IN ELSE###################");
+                                System.out.println("Did not receive the result for the backend for /getSources");
                             }} catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -116,9 +119,12 @@ public class Booking extends AppCompatActivity {
         getBus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buses.setText("\t\tBusNo\t\tArrival\t\t\tDeparture\t\t\tPassengers\t\tPrice");
+
                 passengers=Integer.parseInt(noOfPassengers.getText().toString());
                 buslist.clear();
+                getBusList.setAdapter(null);
+                buses.setText("");
+                buses.setGravity(Gravity.LEFT);
                 //gotoPayment();
 //                jsonParse();
                 listadapter=new ArrayAdapter<String>(Booking.this, android.R.layout.simple_list_item_1,buslist);
@@ -128,40 +134,47 @@ public class Booking extends AppCompatActivity {
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
-                                    if(response.has("result")){
-                                    JSONArray jsonArray=response.getJSONArray("result");
-                                    Log.d("jsonarray",jsonArray.toString());
-                                    sourceid=new Integer[jsonArray.length()];
-                                    dest=new Integer[jsonArray.length()];
-                                    busno=new String[jsonArray.length()];
-                                    sourcename=new String[jsonArray.length()];
-                                    destname=new String[jsonArray.length()];
-                                    arrtime=new String[jsonArray.length()];
-                                    deptime=new String[jsonArray.length()];
-                                    nopass=new Integer[jsonArray.length()];
-                                    bus_id=new Integer[jsonArray.length()];
-                                    priceeach=new Integer[jsonArray.length()];
-                                    for(int i=0;i<jsonArray.length();i++){
-                                        JSONObject jsonObject2=jsonArray.getJSONObject(i);
-                                        bus_id[i]=jsonObject2.getInt("id");
-                                        sourceid[i]=jsonObject2.getInt("src_id");
-                                        dest[i]=jsonObject2.getInt("dest_id");
-                                        sourcename[i]=jsonObject2.getString("src");
-                                        //Log.d("sourcename",sourcename[i]);
-                                        destname[i]=jsonObject2.getString("dest");
-                                        busno[i]=jsonObject2.getString("bus_no");
-                                        arrtime[i]=jsonObject2.getString("arr_time");
-                                        deptime[i]=jsonObject2.getString("dep_time");
-                                        nopass[i]=jsonObject2.getInt("seats");
-                                        priceeach[i]=jsonObject2.getInt("price");
-                                        buslist.add(busno[i]+"\t\t\t\t\t"+arrtime[i]+"\t\t\t\t\t\t\t"+deptime[i]+"\t\t\t\t\t\t\t\t\t\t\t"+nopass[i]+"\t\t\t\t\t\t\t\t\t\t"+priceeach[i]);
-                                    }
-                                    listadapter.notifyDataSetChanged();
-                                    listadapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-                                    getBusList.setAdapter(listadapter);
-                                }else{
-                                        System.out.println("################IN ELSE################");
-                                    } }catch (JSONException e) {
+                                    if(response.has("result")) {
+                                        JSONArray jsonArray = response.getJSONArray("result");
+                                        if (jsonArray.length() > 0) {
+                                            buses.setText("\t\tBusNo\t\tArrival\t\t\tDeparture\t\t\tPassengers\t\tPrice");
+                                            Log.d("jsonarray", jsonArray.toString());
+                                            sourceid = new Integer[jsonArray.length()];
+                                            dest = new Integer[jsonArray.length()];
+                                            busno = new String[jsonArray.length()];
+                                            sourcename = new String[jsonArray.length()];
+                                            destname = new String[jsonArray.length()];
+                                            arrtime = new String[jsonArray.length()];
+                                            deptime = new String[jsonArray.length()];
+                                            nopass = new Integer[jsonArray.length()];
+                                            bus_id = new Integer[jsonArray.length()];
+                                            priceeach = new Integer[jsonArray.length()];
+                                            for (int i = 0; i < jsonArray.length(); i++) {
+                                                JSONObject jsonObject2 = jsonArray.getJSONObject(i);
+                                                bus_id[i] = jsonObject2.getInt("id");
+                                                sourceid[i] = jsonObject2.getInt("src_id");
+                                                dest[i] = jsonObject2.getInt("dest_id");
+                                                sourcename[i] = jsonObject2.getString("src");
+                                                //Log.d("sourcename",sourcename[i]);
+                                                destname[i] = jsonObject2.getString("dest");
+                                                busno[i] = jsonObject2.getString("bus_no");
+                                                arrtime[i] = jsonObject2.getString("arr_time");
+                                                deptime[i] = jsonObject2.getString("dep_time");
+                                                nopass[i] = jsonObject2.getInt("seats");
+                                                priceeach[i] = jsonObject2.getInt("price");
+                                                buslist.add(busno[i] + "\t\t\t\t\t" + arrtime[i] + "\t\t\t\t\t\t\t" + deptime[i] + "\t\t\t\t\t\t\t\t\t\t\t" + nopass[i] + "\t\t\t\t\t\t\t\t\t\t" + priceeach[i]);
+                                            }
+                                            listadapter.notifyDataSetChanged();
+                                            listadapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+                                            getBusList.setAdapter(listadapter);
+                                        }else{
+                                            buses.setText("No Buses");
+                                            buses.setGravity(Gravity.CENTER_HORIZONTAL);
+                                        }
+                                    } else {
+                                            System.out.println("Did not receive the result for the backend for /getBuses");
+                                        }
+                                    }catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -214,53 +227,4 @@ public class Booking extends AppCompatActivity {
         intent.putExtra("date",date.getText().toString());
         startActivity(intent);
     }
-//    public void jsonParse(){
-//        String URL=baseURL+"/getBuses/"+sourceID+"/"+destID;
-//        final JsonArrayRequest jsonObject=new JsonArrayRequest(Request.Method.GET, URL, null,
-//                new Response.Listener<JSONArray>() {
-//                    @Override
-//                    public void onResponse(JSONArray response) {
-//                        try {
-//
-//                            //JSONArray jsonArray=response.getJSONArray(0);
-//                            Log.d("jsonarray",response.toString());
-//                            source=new Integer[response.length()];
-//                            dest=new Integer[response.length()];
-//                            busno=new String[response.length()];
-//                            sourcename=new String[response.length()];
-//                            destname=new String[response.length()];
-//                            arrtime=new String[response.length()];
-//                            deptime=new String[response.length()];
-//                            nopass=new Integer[response.length()];
-//                            bus_id=new Integer[response.length()];
-//                            buslist=new String[response.length()];
-//                            priceeach=new Integer[response.length()];
-//                            for(int i=0;i<response.length();i++){
-//                                JSONArray jsonArray1=response.getJSONArray(i);
-//                                bus_id[i]=jsonArray1.getInt(0);
-//                                source[i]=jsonArray1.getInt(1);
-//                                dest[i]=jsonArray1.getInt(2);
-//                                sourcename[i]=jsonArray1.getString(3);
-//                                //Log.d("sourcename",sourcename[i]);
-//                                destname[i]=jsonArray1.getString(4);
-//                                busno[i]=jsonArray1.getString(5);
-//                                arrtime[i]=jsonArray1.getString(6);
-//                                deptime[i]=jsonArray1.getString(7);
-//                                nopass[i]=jsonArray1.getInt(8);
-//                                priceeach[i]=jsonArray1.getInt(9);
-//                                buslist[i]=bus_id[i]+" "+source[i]+" "+dest[i]+" "+sourcename[i]+" "+destname[i]+" "+busno[i]+" "+arrtime[i]+" "+deptime[i]+" "+nopass[i]+" "+priceeach[i];
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//
-//            }
-//        });
-//        queue.add(jsonObject);
-//    }
-
 }

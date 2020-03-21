@@ -13,8 +13,8 @@ CORS(app)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'akshay@1024'
-app.config['MYSQL_DB'] = 'Cloud_5409'
+app.config['MYSQL_PASSWORD'] = 'root'
+app.config['MYSQL_DB'] = 'cloudproject'
 
 mysql = MySQL(app)
 
