@@ -25,10 +25,14 @@ import java.util.concurrent.TimeoutException;
 public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.LocationsHolder> {
     private ArrayList<Location> locationList;
     private Context mContext;
+    private String user_id;
+    private boolean isAuthenticated;
 
-    public LocationsAdapter(Context context, ArrayList<Location> locationList) {
+    public LocationsAdapter(Context context, ArrayList<Location> locationList, String userid, boolean isAuthenticated) {
         mContext = context;
         this.locationList = locationList;
+        this.user_id = userid;
+        this.isAuthenticated = isAuthenticated;
     }
 
     @NonNull
@@ -55,9 +59,16 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         holder.setLocationItemClickListener(new LocationItemClickListener() {
             @Override
             public void onItemClick(View view, int pos) {
-                Intent intent = new Intent(mContext.getApplicationContext(), Booking.class);
-                intent.putExtra("destId", location.getId());
-                mContext.startActivity(intent);
+                if( isAuthenticated == false || user_id.length()==0){
+                    mContext.startActivity(new Intent(mContext.getApplicationContext(),LoginActivity.class));
+                }
+                else {
+                    Intent intent = new Intent(mContext.getApplicationContext(), Booking.class);
+                    intent.putExtra("destId", location.getId());
+                    intent.putExtra("user_id", user_id);
+                    Log.d("user id: ",user_id);
+                    mContext.startActivity(intent);
+                }
             }
         });
     }
