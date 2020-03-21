@@ -59,7 +59,6 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         holder.setLocationItemClickListener(new LocationItemClickListener() {
             @Override
             public void onItemClick(View view, int pos) {
-
                 if( isAuthenticated == false || user_id.length()==0){
                     mContext.startActivity(new Intent(mContext.getApplicationContext(),LoginActivity.class));
                 }
