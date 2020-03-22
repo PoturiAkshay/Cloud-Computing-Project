@@ -42,7 +42,7 @@ public class Booking extends AppCompatActivity {
     int passengers;
     String sourceName;
     int sourceID=7,destID=4;
-    String baseURL="http://192.168.1.104:5000",user_id;
+    String baseURL="http://192.168.2.15:5000",user_id;
 
     TextView buses;
     private RequestQueue queue;
@@ -139,7 +139,7 @@ public class Booking extends AppCompatActivity {
                                     if(response.has("result")) {
                                         JSONArray jsonArray = response.getJSONArray("result");
                                         if (jsonArray.length() > 0) {
-                                            buses.setText("\t\tBusNo\t\tArrival\t\t\tDeparture\t\t\tPassengers\t\tPrice");
+                                            buses.setText("\t\tBusNo\t\tArrival\t\t\tDeparture\t\t\tSeats Left\t\t\tPrice");
                                             Log.d("jsonarray", jsonArray.toString());
                                             sourceid = new Integer[jsonArray.length()];
                                             dest = new Integer[jsonArray.length()];
@@ -164,7 +164,7 @@ public class Booking extends AppCompatActivity {
                                                 deptime[i] = jsonObject2.getString("dep_time");
                                                 nopass[i] = jsonObject2.getInt("seats");
                                                 priceeach[i] = jsonObject2.getInt("price");
-                                                buslist.add(busno[i] + "\t\t\t\t\t" + arrtime[i] + "\t\t\t\t\t\t\t" + deptime[i] + "\t\t\t\t\t\t\t\t\t\t\t" + nopass[i] + "\t\t\t\t\t\t\t\t\t\t" + priceeach[i]);
+                                                buslist.add(busno[i] + "\t\t\t" + arrtime[i] + "\t\t\t\t" + deptime[i] + "\t\t\t\t\t\t" + nopass[i] + "\t\t\t\t\t\t\t\t\t\t" + "$"+priceeach[i]);
                                             }
                                             listadapter.notifyDataSetChanged();
                                             listadapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
