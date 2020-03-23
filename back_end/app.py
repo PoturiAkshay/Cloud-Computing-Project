@@ -1,98 +1,108 @@
 from flask import Flask, render_template, request,render_template, jsonify,render_template_string
 from flask_mysqldb import MySQL
-import pymysql
 from flask_cors import CORS
 import plotly
 import plotly.graph_objs as go
 
 import pandas as pd
-import numpy as np
 import json
 
 
 app = Flask(__name__)
+#  allow cross origin
 CORS(app)
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Srinivas82*'
-app.config['MYSQL_DB'] = 'proj5409test'
+# database configuration to establish the connection to database
+app.config['MYSQL_HOST'] = 'database-1.cev35euj80dg.us-east-1.rds.amazonaws.com'
+app.config['MYSQL_USER'] = 'proj5409'
+app.config['MYSQL_PASSWORD'] = 'proj5409'
+app.config['MYSQL_DB'] = 'new_schema'
 
 mysql = MySQL(app)
 
 
-@app.route('/')
-def hello():
-    
-    return render_template("invoice.html")
 
+#  fetch locations from database
 @app.route('/search/<loc>', methods=['GET'])
 def index(loc):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT id, name, price, description, image, address, highlights from location WHERE name LIKE %s OR address LIKE %s OR highlights LIKE %s', ("%"+loc+"%", "%"+loc+"%", "%"+loc+"%"))
+    cur.execute('SELECT id, name, price, description, image, address, highlights, address_id from location WHERE name LIKE %s OR address LIKE %s OR highlights LIKE %s', ("%"+loc+"%", "%"+loc+"%", "%"+loc+"%"))
     mysql.connection.commit()
     rows = cur.fetchall()
+    # convert query result to json
     items = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
     cur.close()
     return {'items':items}
 
+
+# fetch order history of a particular use
 @app.route('/orderDetails/<id>', methods=['GET'])
 def getOrderDetails(id):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT t.id as id, l1.address as source_id, l2.address as dest_id , t.date,t.time, t.num_passengers FROM trips t INNER JOIN location l1 ON l1.id=t.source_id INNER JOIN location l2 ON l2.id=t.dest_id where  t.user_id='+id)
+    cur.execute('SELECT t.id as id, a1.name as source_id, a2.name as dest_id , t.date, t.num_passengers FROM trips t INNER JOIN address a1 ON a1.id=t.source_id INNER JOIN address a2 ON a2.id=t.dest_id where  t.user_id='+id)
     mysql.connection.commit()
     rows = cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
     cur.close()
-    return {'result':result}
+    return {'items':result}
 
-
+# api to analyse the trends in data and create visulizations using plotly library
 @app.route('/analytics', methods=['GET'])
 def getAnalytics():
     cur = mysql.connection.cursor()
-    cur.execute('select l1.address as city, t.date,count(*) as num_trips from trips t INNER JOIN location l1 ON l1.id=t.dest_id where t.dest_id  group by t.date,t.dest_id')
+    cur.execute('select a1.name as city, t.date,count(*) as num_trips from trips t INNER JOIN address a1 ON a1.id=t.dest_id where t.dest_id  group by t.date,t.dest_id')
     mysql.connection.commit()
     rows = cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
+    if not result:
+        return "No data to show"
     cur.close()
     line = create_plot(result)
+    # create graph
     res=render_template('analytics.html', plot=line[0],ids=line[1])
     return render_template_string(res)
 
-
+# fetch list of buses from selected source to destination
 @app.route('/getBuses/<sourceId>/<destId>',methods=['GET'])
 def get_invoice(sourceId,destId):
     cur = mysql.connection.cursor()
     # cur.execute('select id,bus_no, arr_time,dep_time,capacity - num_bookings as seats from bus where source_id=%s and dest_id=%s and capacity <> num_bookings' %(sourceId,destId))
-    cur.execute('''select b.id, l1.id as src_id, l2.id as dest_id ,l1.address as src,l2.address as dest,bus_no, arr_time,dep_time,(capacity - num_bookings) 
-    as seats, b.price from bus b INNER JOIN location l1 ON l1.id=b.source_id INNER JOIN location l2 ON l2.id=b.dest_id 
+    cur.execute('''select b.id, a1.id as src_id, a2.id as dest_id ,a1.name as src,a2.name as dest,bus_no, arr_time,dep_time,(capacity - num_bookings) 
+    as seats, b.price from bus b INNER JOIN address a1 ON a1.id=b.source_id INNER JOIN address a2 ON a2.id=b.dest_id 
     where source_id=%s and dest_id=%s and capacity <> num_bookings''' %(sourceId,destId))
     mysql.connection.commit()
     rows=cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
     cur.close()
-    return {'result': result}
+    return jsonify({'result': result})
 
 
-
+# get locations as source
 @app.route('/getSources', methods=['GET'])
 def getSources():
     cur = mysql.connection.cursor()
-    cur.execute('select id as sourceId, name from location')
+    cur.execute('select id as sourceId, name from address')
     mysql.connection.commit()
     rows=cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
     cur.close()
-    return {'result': result}
+    return jsonify({'result': result})
 
-    
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+# add user to the database on signup
+@app.route('/registration/', methods=['POST'])
+def insertUserDetails():
+    data = request.get_json()
+    cur = mysql.connection.cursor()
+    cur.execute(
+        'insert into users (name, email, password, dob, sex) values (%s,%s,%s,%s,%s)',(data['name'],data['email'],data['password'],data['dob'],data['sex']))
+    mysql.connection.commit()
+    cur.close()
+    return {'response':"Data successfully inserted in DB"}
 
-
-
+#  prepare data to analyse bookings for each cities based on timeline
 def create_plot(data):
     df = pd.DataFrame(data)
+    
     cities=df['city'].unique()
     graphs=[]
     for city in cities:
@@ -103,12 +113,12 @@ def create_plot(data):
                 y=cityData['num_trips']
                 )]
         graphs.append(graph)
-   
     ids = [cities[i] for i, _ in enumerate(graphs)]
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
     return [graphJSON,ids]
 
 
+# add invoice on successul booking 
 def createInvoice(id, total):
     cur=mysql.connection.cursor()
     date=pd.to_datetime('today')#.strftime('%Y-%m-%d')
@@ -118,9 +128,48 @@ def createInvoice(id, total):
     mysql.connection.commit()
     cur.close()
     return invoice_id
-	
+
+# payment gateway to verify card details
 @app.route('/makePayment',methods=['POST'])
 def validate_card():
+    user_id=(request.form['userId'])
+    source_id=(request.form['source_id'])
+    dest_id=(request.form['dest_id'])
+    bus_id=request.form['bus_id']
+    price=float(request.form["price"])
+    date=request.form['date']
+    num_passengers=(request.form['numPass'])
+    
+    cardNumber=request.form["cardNumber"]
+    cardName=request.form["cardName"]
+    expiryDate=request.form["expiryDate"]
+    cardCVV=request.form["cvCode"]
+    
+    if(validateCard(cardNumber,expiryDate,cardCVV)):
+        # add trip to database on successful payment
+        cur=mysql.connection.cursor()
+        cur.execute('''INSERT INTO `trips` ( `user_id`, `source_id`, `dest_id`, `date`,  `num_passengers`, `bus_id`) VALUES (%s, %s, %s, %s,  %s, %s)''',(user_id,source_id,dest_id,date,num_passengers,bus_id))
+        trip_id = cur.lastrowid
+        # update number of seats available in bus table
+        cur.execute(''' UPDATE bus SET num_bookings = num_bookings+%s WHERE id = %s''',(num_passengers,bus_id))
+        mysql.connection.commit()
+        #  create invoice for the trip
+        invoice_id=createInvoice(trip_id, (float(num_passengers)*price))
+        cur.execute(""" select t.date as travel_date,u.name as user,i.date as booking_date ,a1.name  as source, a2.name as destination , t.num_passengers, b.bus_no, b.arr_time, b.dep_time, b.price as unit_price, i.amount as total from  invoice i 
+        inner join trips t on t.id=i.trip_id 
+        inner join bus b on b.id=t.bus_id 
+        inner join address a1 on a1.id=t.source_id 
+        inner join address a2 on a2.id=t.dest_id
+        inner join users u on t.user_id=u.id 
+        where i.invoice_no="""+str(invoice_id))
+        rows=cur.fetchall()
+        result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
+        return render_template("invoice.html", invoice_id=invoice_id, result=result[0])
+    else:
+        return 'Payment failed. Please check your card details.'
+
+@app.route('/mobileMakePayment',methods=['POST'])
+def mobile_validate_card():
     user_id=(request.form['userId'])
     source_id=(request.form['source_id'])
     dest_id=(request.form['dest_id'])
@@ -142,59 +191,28 @@ def validate_card():
         cur.execute(''' UPDATE bus SET num_bookings = num_bookings+%s WHERE id = %s''',(num_passengers,bus_id))
         mysql.connection.commit()
         invoice_id=createInvoice(trip_id, (float(num_passengers)*price))
-        cur.execute(""" select t.date as travel_date,u.name as user,i.date as booking_date ,l1.address  as source, l2.address as destination , t.num_passengers, b.bus_no, b.arr_time, b.dep_time, b.price as unit_price, i.amount as total from  invoice i 
+        cur.execute(""" select t.date as travel_date,u.name as user,i.date as booking_date ,a1.name  as source, a2.name as destination , t.num_passengers, b.bus_no, b.arr_time, b.dep_time, b.price as unit_price, i.amount as total from  invoice i 
         inner join trips t on t.id=i.trip_id 
         inner join bus b on b.id=t.bus_id 
-        inner join location l1 on l1.id=t.source_id 
-        inner join location l2 on l2.id=t.dest_id
+        inner join address a1 on a1.id=t.source_id 
+        inner join address a2 on a2.id=t.dest_id
         inner join users u on t.user_id=u.id 
         where i.invoice_no="""+str(invoice_id))
         rows=cur.fetchall()
-        result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
-        print(result)
-        return render_template("invoice.html", invoice_id=invoice_id, result=result[0])
+        #result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
+        #print(result)
+        return jsonify(rows)
     else:
-        return 'Payment failed. Please check your card details.'
-
+        return jsonify(0)
+		
+# card details validation
 def validateCard(cardNumber,cardDate,cardCVV):
     return (cardNumber=="1111111111111111" and cardDate=="00/00" and cardCVV=="999")
          
-    
 
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
 
-
-
-	
-
-
-# @app.route('/alterBus/<sourceID>/<destID>/<numPass>',methods=['GET'])
-# def alter_bus(sourceID,destID,numPass):
-# 	cur=mysql.connection.cursor()
-# 	cur.execute("select num_bookings from cloudproject.bus where source_id=%s and dest_id=%s;",(sourceID,destID))
-# 	rv=cur.fetchall()#get current number of bookings
-# 	new_num_bookings=int(rv[0][0])+int(numPass)
-# 	cur.execute("update cloudproject.bus set num_bookings=%s where source_id=%s and dest_id=%s;",(new_num_bookings,sourceID,destID))
-# 	mysql.connection.commit()
-# 	cur.close()
-# 	return jsonify(1)
-	
-
-
-	
-# @app.route('/alterInvoice/<totalamount>',methods=['GET'])
-# def alter_invoice(totalamount):
-# 	cur=mysql.connection.cursor()
-# 	cur.execute("select id from cloudproject.trip order by id desc limit 1;")
-# 	rv=cur.fetchall()#get current number of bookings
-# 	trip_id=int(rv[0][0])
-# 	now=datetime.now()
-# 	date= now.strftime("%d-%m-%Y")
-# 	time=now.strftime("%H:%M:%S")
-# 	invoice="invoice_"+str(randint(100,999))
-# 	cur.execute("insert into cloudproject.invoice values (%s,'"+date+"','"+time+"',%s,'"+invoice+"');",(trip_id,totalamount))
-# 	mysql.connection.commit()
-# 	cur.close()
-# 	return jsonify(1)
 
 
     # https://dba.stackexchange.com/questions/37014/in-what-data-type-should-i-store-an-email-address-in-database

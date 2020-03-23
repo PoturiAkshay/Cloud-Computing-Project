@@ -11,10 +11,11 @@ class Orders extends Component {
 
   // componentWillMount(){}
   componentDidMount() {
+    console.log(this.props.auth);
     this.service
-      .getOrderDeatils(1)
+      .getOrderDeatils(this.props.auth.email)
       .then(res => {
-        this.setState({ isLoading: false, data: res.data.result });
+        this.setState({ isLoading: false, data: res.data.items });
       })
       //Error handling
       .catch(error => {
@@ -24,6 +25,7 @@ class Orders extends Component {
           data: []
         });
       });
+    //console.log(this.props.auth.email);
   }
 
   // componentWillUnmount(){}
@@ -36,31 +38,37 @@ class Orders extends Component {
   render() {
     return (
       <div className="container">
-        <h1 className="h1 float-left mt-5">Order Details</h1>
-        <table className="table table-striped mt-5">
-          <thead>
-            <tr>
-              <th>Order Number</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Source</th>
-              <th>Destination</th>
-              <th>Number of Passengers</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.data.map((row, index) => (
-              <tr key={row.id}>
-                <td>{row.id}</td>
-                <td>{row.date}</td>
-                <td>{row.time}</td>
-                <td>{row.source_id}</td>
-                <td>{row.dest_id}</td>
-                <td>{row.num_passengers}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {this.props.auth.isAuthenticated && (
+          <div>
+            <h1 className="h1 float-left mt-5">Order Details</h1>
+            <table className="table table-striped mt-5">
+              <thead>
+                <tr>
+                  <th>Order Number</th>
+                  <th>Date</th>
+                  <th>Source</th>
+                  <th>Destination</th>
+                  <th>Number of Passengers</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.data.map((row, index) => (
+                  <tr key={row.id}>
+                    <td>{row.id}</td>
+                    <td>{row.date}</td>
+                    <td>{row.source_id}</td>
+                    <td>{row.dest_id}</td>
+                    <td>{row.num_passengers}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {!this.props.auth.isAuthenticated && (
+          <p>please login to see your order details</p>
+        )}
       </div>
     );
   }

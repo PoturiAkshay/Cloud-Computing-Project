@@ -3,19 +3,24 @@ import "./Search.css";
 import Descriptions from "../Descriptions/Descriptions";
 import Service from "../../Service";
 import Book from "../Book/Book";
+
 class Search extends Component {
   constructor(props) {
     super(props);
-    this.state = { data: [], isLoading: false, showBook: false, id: "" };
+    this.state = { data: [], noData: false, showBook: false, id: "" };
     this.service = new Service();
   }
-  handleSubmit = event => {
-    event.preventDefault();
 
+  handleSubmit = event => {
+    // fetch all the location data
+    event.preventDefault();
     this.service
       .getLocationData(event.target.location.value)
       .then(res => {
-        this.setState({ isLoading: false, data: res.data.items });
+        if (res.data.items.length == 0) alert("No data found");
+        this.setState({
+          data: res.data.items
+        });
       })
       //Error handling
       .catch(error => {
@@ -26,11 +31,14 @@ class Search extends Component {
         });
       });
   };
+  // navigate back from bokking module to search module
   handleBack = () => {
     this.setState({
       showBook: false
     });
   };
+
+  //  navigating to booking module
   bookTicket = destId => {
     this.setState({
       showBook: true,
@@ -38,8 +46,9 @@ class Search extends Component {
     });
   };
 
-  // componentWillMount(){}
-  // componentDidMount(){}
+  componentDidMount() {
+    console.log(this.props.auth);
+  }
   // componentWillUnmount(){}
 
   // componentWillReceiveProps(){}
@@ -74,7 +83,7 @@ class Search extends Component {
             </div>
             <div>
               <ul className="list-group d-flex justify-content-center">
-                {/* map and populate data in table using 'Athlete' component for each row/record */}
+                {/* Details of locations  */}
 
                 {this.state.data.map((row, index) => (
                   <Descriptions
@@ -88,14 +97,19 @@ class Search extends Component {
             </div>
           </div>
         )}
-        {this.state.showBook && (
+        {/* show booking module when user clicks on book */}
+        {this.state.showBook && this.props.auth.isAuthenticated && (
           <Book
             // pass properties to child component
-
             destId={this.state.destId}
             onBack={this.handleBack}
+            user={this.props.auth.email}
           />
         )}
+
+        {this.state.showBook &&
+          !this.props.auth.isAuthenticated &&
+          this.props.history.push("/Login")}
       </div>
     );
   }

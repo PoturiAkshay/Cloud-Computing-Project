@@ -1,6 +1,7 @@
 package com.example.tourismcanada;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -23,9 +24,15 @@ import java.util.concurrent.TimeoutException;
 
 public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.LocationsHolder> {
     private ArrayList<Location> locationList;
+    private Context mContext;
+    private String user_id;
+    private boolean isAuthenticated;
 
-    public LocationsAdapter(ArrayList<Location> locationList) {
+    public LocationsAdapter(Context context, ArrayList<Location> locationList, String userid, boolean isAuthenticated) {
+        mContext = context;
         this.locationList = locationList;
+        this.user_id = userid;
+        this.isAuthenticated = isAuthenticated;
     }
 
     @NonNull
@@ -46,22 +53,56 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
         final Location location = locationList.get(position);
         holder.setLocationImage(location.getImage_url());
         holder.setLocationDescription(location.getDescription());
+        holder.setLocationHighlights(location.getHighlights());
         holder.setLocationName(location.getName());
         holder.setLocationPrice(location.getPrice());
+        holder.setLocationItemClickListener(new LocationItemClickListener() {
+            @Override
+            public void onItemClick(View view, int pos) {
+                if( isAuthenticated == false || user_id.length()==0){
+                    mContext.startActivity(new Intent(mContext.getApplicationContext(),LoginActivity.class));
+                }
+                else {
+                    Intent intent = new Intent(mContext.getApplicationContext(), Booking.class);
+                    intent.putExtra("destId", location.getId());
+                    intent.putExtra("user_id", user_id);
+                    Log.d("user id: ",user_id);
+                    mContext.startActivity(intent);
+                }
+            }
+        });
     }
 
-    public class LocationsHolder extends RecyclerView.ViewHolder {
+    public class LocationsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView locationImage;
         private TextView locationName;
         private TextView locationDescription;
-        private TextView locationPrice;
+        private TextView locationHighlights;
 
-        public LocationsHolder(@NonNull View itemView) {
+        private TextView locationPrice;
+        private LocationItemClickListener locationItemClickListener;
+
+        @Override
+        public void onClick(View v) {
+            locationItemClickListener.onItemClick(v, getLayoutPosition());
+        }
+
+        private void setLocationItemClickListener(LocationItemClickListener listener) {
+            locationItemClickListener = listener;
+        }
+
+        public LocationsHolder(@NonNull final View itemView) {
             super(itemView);
             locationImage = itemView.findViewById(R.id.location_image);
             locationName = itemView.findViewById(R.id.location_name);
             locationDescription = itemView.findViewById(R.id.location_description);
+            locationHighlights = itemView.findViewById(R.id.location_highlights);
             locationPrice = itemView.findViewById(R.id.location_price);
+            itemView.setOnClickListener(this);
+        }
+
+        public void setLocationHighlights(String highlights) {
+            locationHighlights.setText(highlights);
         }
 
         public void setLocationImage(String url) {

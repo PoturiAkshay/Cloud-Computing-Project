@@ -35,11 +35,11 @@ class Descriptions extends Component {
             <i>{this.props.data.highlights}</i>
           </p>
         </div>
-        <h4 className="h4 m-3">Price: {this.props.data.price}</h4>
+        <h4 className="h4 m-3">Estimated trip cost: {this.props.data.price}</h4>
 
         <button
           className="btn btn-info btn-lg m-1 btn-lg"
-          onClick={() => this.props.onBook(this.props.data.id)}
+          onClick={() => this.props.onBook(this.props.data.address_id)}
         >
           Book
         </button>

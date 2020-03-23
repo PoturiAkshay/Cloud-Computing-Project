@@ -8,34 +8,30 @@ class Bus extends Component {
     super(props);
     this.state = { numPass: 1, active: false, activeItem: "" };
   }
-  buyTickets = index => {
+
+  //take users to payment page
+  buyTickets = (e, index) => {
+    e.preventDefault();
     this.props.isActive(index);
     this.toggleClass(index);
   };
+
+  //close and open payment page
   toggleClass = index => {
     const currentState = this.state.active;
     this.setState({ active: !currentState });
   };
+  // set number of passengers
   handleChange = e => {
     this.setState({
       numPass: e.target.value
     });
   };
 
-  // componentWillMount(){}
-  componentDidMount() {
-    console.log(this.props.data);
-  }
-  // componentWillUnmount(){}
-
-  // componentWillReceiveProps(){}
-  // shouldComponentUpdate(){}
-  // componentWillUpdate(){}
-  // componentDidUpdate(){}
-
   render() {
     return (
       <li
+        // populate bus data
         key={this.props.data.id}
         className={
           this.state.active && this.props.index == this.props.activeIndex
@@ -43,7 +39,10 @@ class Bus extends Component {
             : "list-group-item  m-3"
         }
       >
-        <div className=" m-1 ">
+        <form
+          className=" m-1 "
+          onSubmit={e => this.buyTickets(e, this.props.index)}
+        >
           <div className="clearfix">
             <div className="float-left">
               <h4 className="h4 text-left">
@@ -51,19 +50,18 @@ class Bus extends Component {
               </h4>
 
               <span className=" text-left h4">
-                {this.props.data.src} <i>({this.props.data.arr_time})</i>
+                {this.props.data.src} <i>({this.props.data.dep_time})</i>
                 ->
-                {this.props.data.dest} <i>({this.props.data.dep_time})</i>{" "}
+                {this.props.data.dest} <i>({this.props.data.arr_time})</i>{" "}
               </span>
-
+              {/* choose number of passengers */}
               <p className="text-left">
                 <label htmlFor="num_passenger">Number of Passengers: </label>
                 <input
                   type="number"
                   id="num_passenger"
                   name="num_passenger"
-                  min={this.state.numPass}
-                  value={this.state.numPass}
+                  min="1"
                   max={this.props.data.seats}
                   onChange={this.handleChange}
                   required
@@ -76,18 +74,15 @@ class Bus extends Component {
                 Price:{" "}
                 <var>
                   <abbr title="CAD">$</abbr>
-                  {10 * this.state.numPass}
+                  {this.props.data.price * this.state.numPass}
                 </var>
               </p>
-              <button
-                className="btn btn-outline-primary"
-                onClick={() => this.buyTickets(this.props.index)}
-              >
+              <button type="submit" className="btn btn-outline-primary">
                 Buy Tickets
               </button>
             </div>
           </div>
-        </div>
+        </form>
 
         <div
           className={
@@ -96,7 +91,9 @@ class Bus extends Component {
               : "fadeOut"
           }
         >
+          {/* payment page, passing required data  */}
           <Purchase
+            user={this.props.user}
             busInfo={this.props}
             date={this.props.date}
             numPass={this.state.numPass}

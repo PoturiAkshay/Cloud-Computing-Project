@@ -27,7 +27,8 @@ class App extends Component {
   state = {
     isAuthenticated: false,
     isAuthenticating: true,
-    user: null
+    user: null,
+    email: ""
   };
 
   setAuthStatus = authenticated => {
@@ -38,9 +39,16 @@ class App extends Component {
     this.setState({ user: user });
   };
 
+  setEmail = email => {
+    this.setState({ email: email });
+  };
+
   async componentDidMount() {
     try {
       const session = await Auth.currentSession();
+      const user_info = await Auth.currentUserInfo();
+      const email = user_info.attributes.email;
+      this.setEmail(email);
       this.setAuthStatus(true);
       console.log(session);
       const user = await Auth.currentAuthenticatedUser();
@@ -54,6 +62,7 @@ class App extends Component {
     const authprops = {
       isAuthenticated: this.state.isAuthenticated,
       user: this.state.user,
+      email: this.state.email,
       setAuthStatus: this.setAuthStatus,
       setUser: this.setUser
     };
@@ -61,12 +70,17 @@ class App extends Component {
       // Navigation between different components.
       !this.state.isAuthenticating && (
         <div className="App">
+          {/* Routing between different pages/tabs */}
           <Router>
             <div className="App">
               <Home auth={authprops} />
               <Switch>
                 <Redirect exact from="/" to="/Search" />
-                <Route path="/Search" component={Search}></Route>
+                <Route
+                  exact
+                  path="/Search"
+                  render={props => <Search {...props} auth={authprops} />}
+                ></Route>
                 <Route path="/Analytics" component={Analytics}></Route>
                 <Route
                   exact

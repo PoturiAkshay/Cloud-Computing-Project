@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Service from "../../Service";
 import Bus from "../Bus/Bus";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 class Book extends Component {
   constructor(props) {
@@ -13,6 +15,7 @@ class Book extends Component {
       sources: [],
       selectedSource: "",
       data: [],
+      date: "",
       active: false
     };
     this.service = new Service();
@@ -23,13 +26,12 @@ class Book extends Component {
     this.service
       .getSources()
       .then(res => {
-        this.setState({ isLoading: false, sources: res.data.result, date: "" });
+        this.setState({ sources: res.data.result });
       })
       //Error handling
       .catch(error => {
         //data is empty in case of error.
         this.setState({
-          isLoading: false,
           data: []
         });
       });
@@ -37,34 +39,21 @@ class Book extends Component {
 
   onSubmit = event => {
     event.preventDefault();
-
+    // fetch buses from selected source to destination
     this.service
       .getBuses(event.target.source.value, this.props.destId)
       .then(res => {
-        this.setState({ isLoading: false, data: res.data.result });
-        console.log(res);
+        this.setState({ data: res.data.result });
+        if (res.data.result.length == 0) alert("No buses found");
       })
       //Error handling
       .catch(error => {
         //data is empty in case of error.
         this.setState({
-          isLoading: false,
           data: []
         });
       });
   };
-  purchaseTicket = () => {
-    console.log("purchase");
-  };
-  // handleChange = event => {
-  //   console.log(event.target.value);
-  // };
-  // componentWillUnmount(){}
-
-  // componentWillReceiveProps(){}
-  // shouldComponentUpdate(){}
-  // componentWillUpdate(){}
-  // componentDidUpdate(){}
 
   render() {
     return (
@@ -80,6 +69,7 @@ class Book extends Component {
         <form onSubmit={this.onSubmit} className="mt-5">
           <div className="form-group">
             <label htmlFor="source">Select source:</label>
+            {/* list of source location */}
             <select
               className="form-control"
               name="source"
@@ -95,19 +85,24 @@ class Book extends Component {
               })}
             </select>
           </div>
+          {/* travel date */}
           <div className="form-group">
             <label htmlFor="date">Select date:</label>
             <input
+              min={
+                new Date().getFullYear() +
+                "-" +
+                ("0" + (new Date().getMonth() + 1)).slice(-2) +
+                "-" +
+                ("0" + new Date().getDate()).slice(-2)
+              }
               className="form-control"
               name="date"
               type="date"
               required
-              onChange={e => this.setState({ date: e.target.value })}
-              // ref={date => {
-              //   this.dateRef = date;
-              // }}
-              // value={this.state.date}
-              // onChange={this._onDateChange.bind(this)}
+              dateFormat="yyyy-mm-dd"
+              // onChange={e => this.setState({ date: e.target.value })}
+              onChange={date => this.setState({ date: date })}
             />
           </div>
           <button type="submit" className="btn btn-primary">
@@ -117,12 +112,14 @@ class Book extends Component {
         {this.state.data.length > 0 && (
           <div className="d-flex justify-content-center col">
             <ul className="list-group col-lg-8 ">
+              {/* show buses */}
               {this.state.data.map((row, index) => (
                 <Bus
                   // pass properties to child component
                   key={index}
                   data={row}
                   index={index}
+                  user={this.props.user}
                   date={this.state.date}
                   isActive={index => this.setState({ activeItem: index })}
                   activeIndex={this.state.activeItem}

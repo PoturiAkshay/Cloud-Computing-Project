@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
@@ -15,11 +17,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,18 +32,31 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ArrayList<Location> locationArrayList = new ArrayList<>();
     private TextView noSearchText;
+    private String login_status="";
+    private String email_address="";
+    private MenuItem Mlogin,Mlogout;
+    private View rootView;
+
+    private boolean isAuthenticated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Get the bundle
+        Bundle bundle = getIntent().getExtras();
+
+        //Extract the data…
+        if (bundle != null) {
+            login_status = bundle.getString("login_button");
+            email_address = bundle.getString("user_id");
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         handleIntent(getIntent());
         recyclerView = findViewById(R.id.recycler_view);
         noSearchText = findViewById(R.id.no_search_text);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        locationsAdapter = new LocationsAdapter(locationArrayList);
-        recyclerView.setAdapter(locationsAdapter);
+        rootView = findViewById(android.R.id.content);
     }
 
     @Override
@@ -55,7 +69,26 @@ public class MainActivity extends AppCompatActivity {
         assert searchManager != null;
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
-        searchView.setSubmitButtonEnabled(false);
+        searchView.setSubmitButtonEnabled(true);
+        if(login_status!=null && login_status.equals("hide")){
+            Mlogin = menu.findItem(R.id.menu_login);
+            Mlogout = menu.findItem(R.id.menu_logout);
+            Mlogin.setVisible(false);
+            Mlogout.setVisible(true);
+        }
+
+        if(Mlogin==null || Mlogin.isVisible()==true){
+            isAuthenticated = false;
+        }
+        else{
+            isAuthenticated = true;
+        }
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        locationsAdapter = new LocationsAdapter(this, locationArrayList, email_address, isAuthenticated);
+        recyclerView.setAdapter(locationsAdapter);
+
         return true;
     }
 
@@ -63,21 +96,63 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.menu_analytics){
             //call Analytics activity from here
+            startActivity(new Intent(this, Analytics.class));
             return true;
         }
         if(item.getItemId() == R.id.menu_orders){
-            startActivity(new Intent(this, OrderHistoryActivity.class));
+            if(Mlogin==null || Mlogin.isVisible()==true){
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setMessage("Please login to see your order history");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+
+                //RequestQueueService.showAlert("please login to see your order history", MainActivity.this);
+            }
+            else{
+
+                Log.d("user details: ",email_address);
+                startActivity(new Intent(this, OrderHistoryActivity.class));
+            }
             return true;
         }
         if(item.getItemId() == R.id.menu_login){
-            //call login activity from here
+
+            startActivity(new Intent(this,LoginActivity.class));
+            return true;
+        }
+        if(item.getItemId() == R.id.menu_logout){
+            isAuthenticated = false;
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(layoutManager);
+            locationsAdapter = new LocationsAdapter(this, locationArrayList, email_address, isAuthenticated);
+            recyclerView.setAdapter(locationsAdapter);
+
+            Mlogout.setVisible(false);
+            Mlogin.setVisible(true);
+            Log.d("Akshay: ","inside logout");
+
+            AwsCognitoConfig cognitoConfig = new AwsCognitoConfig(MainActivity.this);
+            CognitoUser user = cognitoConfig.getPool().getUser();
+            Log.d("Akshay user details: ",user.toString());
+            user.signOut();
             return true;
         }
         if(item.getItemId() == R.id.menu_search){
-            //onSearchRequested();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        rootView.requestFocus();
     }
 
     @Override
@@ -128,13 +203,14 @@ public class MainActivity extends AppCompatActivity {
                             for(int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jobj = jsonArray.getJSONObject(i);
                                 int id = jobj.getInt("id");
+                                int address_id = jobj.getInt("address_id");
                                 String address = jobj.getString("address");
                                 String description = jobj.getString("description");
                                 String highlights = jobj.getString("highlights");
                                 String image = jobj.getString("image");
                                 String name = jobj.getString("name");
                                 String price = jobj.getString("price");
-                                locationArrayList.add(new Location(id, name, address, description, highlights, price, image));
+                                locationArrayList.add(new Location(id, address_id, name, address, description, highlights.trim(), price, image));
                             }
                             noSearchText.setVisibility(View.INVISIBLE);
                         } else {

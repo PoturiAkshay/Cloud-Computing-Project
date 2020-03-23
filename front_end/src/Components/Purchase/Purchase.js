@@ -3,56 +3,14 @@ import "./Purchase.css";
 import Service from "../../Service";
 import { Modal } from "react-bootstrap";
 
-import {
-  formatCreditCardNumber,
-  formatCVC,
-  formatExpirationDate
-} from "./validation";
-
 class Purchase extends Component {
   constructor(props) {
     super(props);
-    this.state = { cardNumber: "", cvv: "", date: "", showModal: false };
-    this.service = new Service();
+    this.state = { cardNumber: "", cvv: "", date: "" };
   }
-
-  onPayment = event => {
-    // event.preventDefault();
-    // const data = new FormData(event.target);
-    // data.append("source_id", this.props.busInfo.data.src_id);
-    // data.append("dest_id", this.props.busInfo.data.dest_id);
-    // data.append("date", this.props.date);
-    // data.append("numPass", this.props.numPass);
-    // data.append("price", this.props.busInfo.data.price);
-    // data.append("userId", 1);
-    // this.service
-    //   .makePayment(data)
-    //   .then(res => {
-    //     // this.setState({ showModal: true });
-    //   })
-    //   //Error handling
-    //   .catch(error => {
-    //     //data is empty in case of error.
-    //     this.setState({
-    //       isLoading: false,
-    //       data: []
-    //     });
-    //   });
-  };
-  // componentWillMount(){}
-  componentDidMount() {
-    console.log(this.props);
-  }
-  // componentWillUnmount(){}
-
-  // componentWillReceiveProps(){}
-  // shouldComponentUpdate(){}
-  // componentWillUpdate(){}
-  // componentDidUpdate(){}
-
   render() {
     return (
-      // Navigation between different components.
+      // Pyment module. Opens invoice page on successful payment
       <div className="container">
         <div className="">
           <div className="">
@@ -65,8 +23,8 @@ class Purchase extends Component {
                   role="form"
                   method="post"
                   action="http://127.0.0.1:5000/makePayment"
-                  // target="_blank"
                 >
+                  {/* hidden fields to post required data  */}
                   <input
                     type="hidden"
                     name="source_id"
@@ -98,8 +56,12 @@ class Purchase extends Component {
                     name="price"
                     value={this.props.busInfo.data.price}
                   ></input>
-                  <input type="hidden" name="userId" value="1"></input>
-
+                  <input
+                    type="hidden"
+                    name="userId"
+                    value={this.props.user}
+                  ></input>
+                  {/* card name in required format */}
                   <div className="form-group">
                     <div className="input-group">
                       <input
@@ -113,6 +75,7 @@ class Purchase extends Component {
                       />
                     </div>
                   </div>
+                  {/* card number in required format */}
                   <div className="form-group">
                     <div className="input-group">
                       <input
@@ -126,6 +89,7 @@ class Purchase extends Component {
                       />
                     </div>
                   </div>
+                  {/* card expiration in required format */}
                   <div className="form-group">
                     <input
                       type="text"
@@ -136,6 +100,7 @@ class Purchase extends Component {
                       required
                     />
                   </div>
+                  {/* card cvv in required format */}
                   <div className="form-group">
                     <input
                       type="password"
@@ -156,34 +121,6 @@ class Purchase extends Component {
                     </button>
                   </div>
                 </form>
-                {/* {this.state.showModal && ( */}
-                <Modal show={this.state.showModal} onHide={this.props.onClose}>
-                  <Modal.Header closeButton>
-                    <Modal.Title>Delete</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    Are you sure you wish to delete the record?
-                  </Modal.Body>
-                  <Modal.Footer>
-                    {/* Close popup */}
-                    <button
-                      variant="secondary"
-                      onClick={this.props.onClose}
-                      className="btn btn-outline-secondary"
-                    >
-                      Close
-                    </button>
-                    {/*  Delete reocrod on confirmation */}
-                    <button
-                      autoFocus
-                      className="btn btn-danger"
-                      variant="primary"
-                    >
-                      Delete
-                    </button>
-                  </Modal.Footer>
-                </Modal>
-                {/* )} */}
               </div>
             </div>
           </div>
