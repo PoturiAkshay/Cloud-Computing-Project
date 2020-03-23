@@ -71,14 +71,14 @@ public class RegistrationActivity extends AppCompatActivity {
                 if(!signUpConfirmationState){
                     Log.i(TAG,"user registered. verification link sent to email.."+
                             cognitoUserCodeDeliveryDetails.getDestination());
-//                    Intent intent = new Intent(RegistrationActivity.this, RegConfirmActivity.class);
-//                    startActivity(intent);
-//                    finish();
                     Toast.makeText(RegistrationActivity.this, "Sign Up successful, please check your email", Toast.LENGTH_SHORT).show();
+
+
 
                     Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
+
                 }
                 else{
                     Log.i(TAG, "user registered and confirmed..");
