@@ -39,7 +39,7 @@ def index(loc):
 @app.route('/orderDetails/<id>', methods=['GET'])
 def getOrderDetails(id):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT t.id as id, a1.name as source_id, a2.name as dest_id , t.date, t.num_passengers FROM trips t INNER JOIN address a1 ON a1.id=t.source_id INNER JOIN address a2 ON a2.id=t.dest_id where  t.user_id='+id)
+    cur.execute('SELECT t.id as id, a1.name as source_id, a2.name as dest_id , t.date, t.num_passengers FROM trips t INNER JOIN address a1 ON a1.id=t.source_id INNER JOIN address a2 ON a2.id=t.dest_id where t.user_id="%s"'%(str(id)))
     mysql.connection.commit()
     rows = cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
@@ -78,10 +78,10 @@ def get_invoice(sourceId,destId):
 
 
 # get locations as source
-@app.route('/getSources', methods=['GET'])
-def getSources():
+@app.route('/getSources/<destId>', methods=['GET'])
+def getSources(destId):
     cur = mysql.connection.cursor()
-    cur.execute('select id as sourceId, name from address')
+    cur.execute('select id as sourceId, name from address where id <>'+destId)
     mysql.connection.commit()
     rows=cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
@@ -160,13 +160,15 @@ def validate_card():
         inner join bus b on b.id=t.bus_id 
         inner join address a1 on a1.id=t.source_id 
         inner join address a2 on a2.id=t.dest_id
-        inner join users u on t.user_id=u.id 
+        inner join users u on t.user_id=u.email 
         where i.invoice_no="""+str(invoice_id))
+        
         rows=cur.fetchall()
         result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
         return render_template("invoice.html", invoice_id=invoice_id, result=result[0])
     else:
         return 'Payment failed. Please check your card details.'
+
 
 @app.route('/mobileMakePayment',methods=['POST'])
 def mobile_validate_card():

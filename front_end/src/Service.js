@@ -14,8 +14,8 @@ class Service {
   getAnalytics = () => {
     return axios.get(base_url + "analytics");
   };
-  getSources = () => {
-    return axios.get(base_url + "getSources");
+  getSources = destId => {
+    return axios.get(base_url + "getSources/" + destId);
   };
   getBuses = (sourceId, destId) => {
     return axios.get(base_url + "getBuses/" + sourceId + "/" + destId);

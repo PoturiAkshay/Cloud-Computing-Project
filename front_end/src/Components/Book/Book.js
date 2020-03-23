@@ -11,7 +11,7 @@ class Book extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      destId: this.props.id,
+      destId: this.props.destId,
       sources: [],
       selectedSource: "",
       data: [],
@@ -24,7 +24,7 @@ class Book extends Component {
   // componentWillMount(){}
   componentDidMount() {
     this.service
-      .getSources()
+      .getSources(this.state.destId)
       .then(res => {
         this.setState({ sources: res.data.result });
       })
@@ -41,7 +41,7 @@ class Book extends Component {
     event.preventDefault();
     // fetch buses from selected source to destination
     this.service
-      .getBuses(event.target.source.value, this.props.destId)
+      .getBuses(event.target.source.value, this.state.destId)
       .then(res => {
         this.setState({ data: res.data.result });
         if (res.data.result.length == 0) alert("No buses found");
