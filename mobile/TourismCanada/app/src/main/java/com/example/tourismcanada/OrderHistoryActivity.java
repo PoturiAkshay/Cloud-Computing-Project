@@ -21,9 +21,18 @@ public class OrderHistoryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ArrayList<Order> orderArrayList = new ArrayList<>();
     private TextView noOrderText;
+    private String user_id="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Bundle bundle = getIntent().getExtras();
+
+        //Extract the data…
+        if (bundle != null) {
+            user_id = bundle.getString("user_id");
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
         recyclerView = findViewById(R.id.orders_recycler_view);
@@ -35,10 +44,10 @@ public class OrderHistoryActivity extends AppCompatActivity {
         orderArrayList.clear();
         noOrderText.setVisibility(View.VISIBLE);
         //TODO: get current userID and pass it in the method
-        getApiCall(1);
+        getApiCall(user_id);
     }
 
-    private void getApiCall(int userID){
+    private void getApiCall(String userID){
         try{
             //Create Instance of GETAPIRequest and call it's
             //request() method
