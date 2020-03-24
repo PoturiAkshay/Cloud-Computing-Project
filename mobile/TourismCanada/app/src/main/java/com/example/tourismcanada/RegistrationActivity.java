@@ -17,8 +17,19 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserAttributes;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserCodeDeliveryDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -73,7 +84,7 @@ public class RegistrationActivity extends AppCompatActivity {
                             cognitoUserCodeDeliveryDetails.getDestination());
                     Toast.makeText(RegistrationActivity.this, "Sign Up successful, please check your email", Toast.LENGTH_SHORT).show();
 
-
+                    saveUser();
 
                     Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
                     startActivity(intent);
@@ -144,5 +155,52 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void saveUser() {
+        String baseURL = "http://192.168.0.3:5000";
+        String URL = baseURL + "/registration/";
+        RequestQueue queue = Volley.newRequestQueue(this);
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name.getText().toString());
+        params.put("email", email.getText().toString());
+        params.put("password", password.getText().toString());
+        params.put("dob", "2020-03-18");
+        String gender_male = male.getText().toString();
+        String gender;
+        if(gender_male.matches(""))
+        {
+            gender = "female";
+        }
+        else{
+            gender = "male";
+        }
+        params.put("sex", gender);
+        JSONObject jsonObject = new JSONObject(params);
+
+        JsonObjectRequest stringRequest = new JsonObjectRequest(URL, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            JSONArray rows=new JSONArray(response);
+                            JSONArray results=rows.getJSONArray(0);
+
+                        }catch (JSONException e){
+                            Toast.makeText(RegistrationActivity.this,"Reg failed. Please check your card details.",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(RegistrationActivity.this,"Something went wrong. Please try again.",Toast.LENGTH_LONG).show();
+                    }
+                }) {
+
+        };
+        queue.add(stringRequest);
+    }
+
+
 }
 
