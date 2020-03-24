@@ -32,7 +32,7 @@ def index(loc):
     # convert query result to json
     items = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
     cur.close()
-    return {'items':items}
+    return jsonify({'items':items})
 
 
 # fetch order history of a particular use
@@ -186,26 +186,28 @@ def mobile_validate_card():
     cardCVV=request.form["cvCode"]
     
     if(validateCard(cardNumber,expiryDate,cardCVV)):
-        
+        # add trip to database on successful payment
         cur=mysql.connection.cursor()
         cur.execute('''INSERT INTO `trips` ( `user_id`, `source_id`, `dest_id`, `date`,  `num_passengers`, `bus_id`) VALUES (%s, %s, %s, %s,  %s, %s)''',(user_id,source_id,dest_id,date,num_passengers,bus_id))
         trip_id = cur.lastrowid
+        # update number of seats available in bus table
         cur.execute(''' UPDATE bus SET num_bookings = num_bookings+%s WHERE id = %s''',(num_passengers,bus_id))
         mysql.connection.commit()
+        #  create invoice for the trip
         invoice_id=createInvoice(trip_id, (float(num_passengers)*price))
         cur.execute(""" select t.date as travel_date,u.name as user,i.date as booking_date ,a1.name  as source, a2.name as destination , t.num_passengers, b.bus_no, b.arr_time, b.dep_time, b.price as unit_price, i.amount as total from  invoice i 
         inner join trips t on t.id=i.trip_id 
         inner join bus b on b.id=t.bus_id 
         inner join address a1 on a1.id=t.source_id 
         inner join address a2 on a2.id=t.dest_id
-        inner join users u on t.user_id=u.id 
+        inner join users u on t.user_id=u.email 
         where i.invoice_no="""+str(invoice_id))
+        
         rows=cur.fetchall()
         #result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
-        #print(result)
         return jsonify(rows)
     else:
-        return jsonify(0)
+        return jsonify([0])
 		
 # card details validation
 def validateCard(cardNumber,cardDate,cardCVV):

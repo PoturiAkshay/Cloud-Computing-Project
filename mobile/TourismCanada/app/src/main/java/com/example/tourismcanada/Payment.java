@@ -36,7 +36,7 @@ public class Payment extends AppCompatActivity {
     Button paymentButton;
     String date;
     private RequestQueue queue;
-    String baseURL = "http://192.168.0.3:5000",user_id;
+    String baseURL = "http://192.168.2.15:5000",user_id;
     int passengers, price, source_id, dest_id, bus_id;
 
 
@@ -96,7 +96,7 @@ public class Payment extends AppCompatActivity {
                             intent.putExtra("total",results.getInt(10));
                             startActivity(intent);
                         }catch (JSONException e){
-//                            e.printStackTrace();
+                            e.printStackTrace();
                             Toast.makeText(Payment.this,"Payment failed. Please check your card details.",Toast.LENGTH_LONG).show();
                         }
                     }

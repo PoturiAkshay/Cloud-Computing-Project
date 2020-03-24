@@ -25,7 +25,7 @@ public class GetAPIRequest {
             listener.onFetchStart();
         }
         //base server URL
-        String baseUrl="http://192.168.0.3:5000/";
+        String baseUrl="http://192.168.2.15:5000/";
         String url = baseUrl + ApiURL;
         Log.d("Gaurav: ", url);
         JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.GET, url, null,
