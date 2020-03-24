@@ -22,6 +22,9 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,7 +86,7 @@ public class Payment extends AppCompatActivity {
                             JSONArray rows=new JSONArray(response);
                             JSONArray results=rows.getJSONArray(0);
                             Intent intent =new Intent(Payment.this, Summary.class);
-                            intent.putExtra("travel_date",results.getString(0));
+                            intent.putExtra("travel_date",date);
                             intent.putExtra("user",results.getString(1));
                             intent.putExtra("booking_date",results.getString(2));
                             intent.putExtra("source",results.getString(3));

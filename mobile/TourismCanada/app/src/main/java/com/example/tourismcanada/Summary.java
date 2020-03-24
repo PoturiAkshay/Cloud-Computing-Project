@@ -32,7 +32,7 @@ public class Summary extends AppCompatActivity {
         unit_price=intent.getIntExtra("unit_price",0);
         total=intent.getIntExtra("total",0);
 //        Toast.makeText(this,travel_date+" "+user+" "+booking_date+" "+source+" "+dest+" "+bus_no+" "+arr_time+" "+dep_time+" "+num_pass+" "+unit_price+" "+total,Toast.LENGTH_LONG).show();
-        String details="Travel date:           "+travel_date+"\nUser:                       "+user+"\nBooking date:         "+booking_date+"\nSource:               "+source+"\nDestination:           "+dest+"\nBus No.:                 "+bus_no+"\nArrival Time:          "+arr_time+"\nDeparture Time:    "+dep_time+"\nSeats Booked:       "+num_pass+"\nPrice:                      "+unit_price+"\nTotal:                      "+total;
+        String details="Travel date:           "+travel_date+"\nUser:                       "+user+"\nBooking date:         "+booking_date+"\nSource:               "+source+"\nDestination:           "+dest+"\nBus No.:                 "+bus_no+"\nArrival Time:          "+arr_time+"\nDeparture Time:    "+dep_time+"\nSeats Booked:       "+num_pass+"\nPrice:                      $"+unit_price+"\nTotal:                      $"+total;
         summary.setText(details);
     }
 }
