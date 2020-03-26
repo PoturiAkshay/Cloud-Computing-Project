@@ -72,6 +72,7 @@ class Search extends Component {
                   placeholder="Search"
                   aria-label="Search"
                   name="location"
+                  required
                 />
                 <button
                   className="btn btn-dark btn-rounded  my-0 ml-sm-2 col-lg-2 col-md-2"

@@ -76,7 +76,6 @@ def get_invoice(sourceId,destId):
     cur.close()
     return jsonify({'result': result})
 
-
 # get locations as source
 @app.route('/getSources/<destId>', methods=['GET'])
 def getSources(destId):
@@ -211,7 +210,7 @@ def mobile_validate_card():
 def validateCard(cardNumber,cardDate,cardCVV):
     return (cardNumber=="1111111111111111" and cardDate=="00/00" and cardCVV=="999")
          
-
+         
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 
