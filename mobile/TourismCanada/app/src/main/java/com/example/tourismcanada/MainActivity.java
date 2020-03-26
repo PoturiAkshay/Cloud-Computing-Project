@@ -116,7 +116,13 @@ public class MainActivity extends AppCompatActivity {
             else{
 
                 Log.d("user details: ",email_address);
-                startActivity(new Intent(this, OrderHistoryActivity.class));
+
+                Intent intent = new Intent(this, OrderHistoryActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("user_id",email_address);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
             return true;
         }

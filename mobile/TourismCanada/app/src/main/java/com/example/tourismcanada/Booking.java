@@ -42,7 +42,7 @@ public class Booking extends AppCompatActivity {
     int passengers;
     String sourceName;
     int sourceID=7,destID=4;
-    String baseURL="http://192.168.0.3:5000",user_id;
+    String baseURL="http://192.168.2.15:5000",user_id;
 
     TextView buses;
     private RequestQueue queue;
@@ -62,7 +62,7 @@ public class Booking extends AppCompatActivity {
         destID=intent.getIntExtra("destId",2);
         user_id=intent.getStringExtra("user_id");
         queue= Volley.newRequestQueue(this);
-        String URL=baseURL+"/getSources";
+        String URL=baseURL+"/getSources/"+destID;
         final Spinner source = (Spinner) findViewById(R.id.sourceID);
         currentDate=Calendar.getInstance();
         day=currentDate.get(Calendar.DAY_OF_MONTH);
