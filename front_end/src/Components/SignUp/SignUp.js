@@ -123,7 +123,7 @@ class SignUp extends Component {
 
           <form onSubmit={this.SubmitAction}>
             <div className="field">
-              <p className="controll">
+              <p className="control">
                 <input
                   className="input"
                   type="text"
@@ -136,41 +136,47 @@ class SignUp extends Component {
               </p>
             </div>
 
-            <p> Please Select the Gender</p>
-            <div className="dropdown">
-              <p>
-                <select
-                  id="sex"
-                  value={this.state.sex}
-                  onChange={this.onInputChange}
-                >
-                  <option value="0"></option>
-                  <option value="Male">Male</option>
-                  <option value="Female">FeMale</option>
-                  <option value="Other">Other</option>
-                </select>
-              </p>
+            <div className="div field ">
+              <label htmlFor="sex" className="float-left  ">
+                Please select the Gender
+              </label>
+              <select
+                id="sex"
+                value={this.state.sex}
+                onChange={this.onInputChange}
+                className="form-control"
+              >
+                <option value="0"></option>
+                <option value="Male">Male</option>
+                <option value="Female">FeMale</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
 
-            <p> Please Enter the date of birth</p>
-            <div className="div field">
-              <input
-                id="dob"
-                max={
-                  new Date().getFullYear() +
-                  "-" +
-                  ("0" + (new Date().getMonth() + 1)).slice(-2) +
-                  "-" +
-                  ("0" + new Date().getDate()).slice(-2)
-                }
-                className="form-control"
-                name="date"
-                type="date"
-                required
-                dateformat="yyyy-mm-dd"
-                selected={this.state.dob}
-                onChange={this.handleChange}
-              />
+            {/* <p> Please Enter the date of birth</p> */}
+            <div className="div field ">
+              <span>
+                <label htmlFor="dob" className="float-left">
+                  Please enter the date of birth
+                </label>
+                <input
+                  id="dob"
+                  max={
+                    new Date().getFullYear() +
+                    "-" +
+                    ("0" + (new Date().getMonth() + 1)).slice(-2) +
+                    "-" +
+                    ("0" + new Date().getDate()).slice(-2)
+                  }
+                  className="form-control"
+                  name="date"
+                  type="date"
+                  required
+                  dateformat="yyyy-mm-dd"
+                  selected={this.state.dob}
+                  onChange={this.handleChange}
+                />
+              </span>
               {/* <DatePicker
                 id="dob"
                 className="input"
