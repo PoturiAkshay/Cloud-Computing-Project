@@ -35,22 +35,20 @@ def createInvoice(id, total):
 
 
 # payment gateway to verify card details
-@app.route('/makePayment')
+@app.route('/makePayment',methods=['POST'])
 def validate_card():
+    user_id=(request.form['userId'])
+    source_id=(request.form['source_id'])
+    dest_id=(request.form['dest_id'])
+    bus_id=request.form['bus_id']
+    price=float(request.form["price"])
+    date=request.form['date']
+    num_passengers=(request.form['numPass'])
     
-    req = request.args.get("request")
-    user_id=(req.form['userId'])
-    source_id=(req.form['source_id'])
-    dest_id=(req.form['dest_id'])
-    bus_id=req.form['bus_id']
-    price=float(req.form["price"])
-    date=req.form['date']
-    num_passengers=(req.form['numPass'])
-    
-    cardNumber=req.form["cardNumber"]
-    cardName=req.form["cardName"]
-    expiryDate=req.form["expiryDate"]
-    cardCVV=req.form["cvCode"]
+    cardNumber=request.form["cardNumber"]
+    cardName=request.form["cardName"]
+    expiryDate=request.form["expiryDate"]
+    cardCVV=request.form["cvCode"]
     
     if(validateCard(cardNumber,expiryDate,cardCVV)):
         # add trip to database on successful payment
