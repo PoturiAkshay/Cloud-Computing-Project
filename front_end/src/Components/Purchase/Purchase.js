@@ -70,7 +70,6 @@ class Purchase extends Component {
                         name="cardName"
                         placeholder="Name on Card"
                         type="text"
-                        value="a"
                         required
                         autoFocus
                       />
@@ -85,7 +84,6 @@ class Purchase extends Component {
                         name="cardNumber"
                         pattern="[\d| ]{16,22}"
                         placeholder="Card Number(16-22 digits)"
-                        value="1111111111111111"
                         required
                         autoFocus
                       />
@@ -99,7 +97,6 @@ class Purchase extends Component {
                       name="expiryDate"
                       pattern="\d\d/\d\d"
                       placeholder="Valid Thru (MM/YY)"
-                      value="00/00"
                       required
                     />
                   </div>
@@ -109,7 +106,6 @@ class Purchase extends Component {
                       type="password"
                       className="form-control"
                       name="cvCode"
-                      value="999"
                       pattern="\d{3,4}"
                       placeholder="CVC (3 digits)"
                       required

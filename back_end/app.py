@@ -69,7 +69,7 @@ def get_invoice(sourceId,destId):
     # cur.execute('select id,bus_no, arr_time,dep_time,capacity - num_bookings as seats from bus where source_id=%s and dest_id=%s and capacity <> num_bookings' %(sourceId,destId))
     cur.execute('''select b.id, a1.id as src_id, a2.id as dest_id ,a1.name as src,a2.name as dest,bus_no, arr_time,dep_time,(capacity - num_bookings) 
     as seats, b.price from bus b INNER JOIN address a1 ON a1.id=b.source_id INNER JOIN address a2 ON a2.id=b.dest_id 
-    where source_id=%s and dest_id=%s and capacity <> num_bookings''' %(sourceId,destId))
+    where source_id=%s and dest_id=%s and capacity > num_bookings ''' %(sourceId,destId))
     mysql.connection.commit()
     rows=cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
@@ -190,6 +190,7 @@ def mobile_validate_card():
 		cur.execute('''INSERT INTO `trips` ( `user_id`, `source_id`, `dest_id`, `date`,  `num_passengers`, `bus_id`) VALUES (%s, %s, %s, %s,  %s, %s)''',(user_id,source_id,dest_id,date,num_passengers,bus_id))
 		trip_id = cur.lastrowid
 		# update number of seats available in bus table
+
 		cur.execute(''' UPDATE bus SET num_bookings = num_bookings+%s WHERE id = %s''',(num_passengers,bus_id))
 		mysql.connection.commit()
 		#  create invoice for the trip
@@ -212,9 +213,9 @@ def mobile_validate_card():
 def validateCard(cardNumber,cardDate,cardCVV):
     return (cardNumber=="1111111111111111" and cardDate=="00/00" and cardCVV=="999")
          
-         
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0',debug=True, port=5000)
 
 
 
