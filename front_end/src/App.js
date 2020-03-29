@@ -45,12 +45,10 @@ class App extends Component {
 
   async componentDidMount() {
     try {
-      const session = await Auth.currentSession();
       const user_info = await Auth.currentUserInfo();
       const email = user_info.attributes.email;
       this.setEmail(email);
       this.setAuthStatus(true);
-      console.log(session);
       const user = await Auth.currentAuthenticatedUser();
       this.setUser(user);
     } catch (error) {

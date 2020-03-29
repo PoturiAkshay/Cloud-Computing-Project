@@ -9,22 +9,12 @@ class Analytics extends Component {
     this.service = new Service();
   }
 
-  // componentWillMount(){}
   componentDidMount() {
-    const Plotly = window.Plotly;
+    // hit the analytics api once the component is mounted
     this.service
       .getAnalytics(1)
       .then(res => {
         this.setState({ isLoading: false, data: res.data });
-        // var layout = {
-        //   xaxis: { autorange: true },
-        //   yaxis: { autorange: true }
-        // };
-
-        // Plotly.react("analytics", {
-        //   data: res.data,
-        //   layout: layout
-        // });
       })
       //Error handling
       .catch(error => {
@@ -35,12 +25,6 @@ class Analytics extends Component {
         });
       });
   }
-  // componentWillUnmount(){}
-
-  // componentWillReceiveProps(){}
-  // shouldComponentUpdate(){}
-  // componentWillUpdate(){}
-  // componentDidUpdate(){}
 
   render() {
     return (

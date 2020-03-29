@@ -4,8 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Service from "../../Service";
 import Bus from "../Bus/Bus";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 class Book extends Component {
   constructor(props) {
@@ -21,7 +19,6 @@ class Book extends Component {
     this.service = new Service();
   }
 
-  // componentWillMount(){}
   componentDidMount() {
     this.service
       .getSources(this.state.destId)
@@ -32,7 +29,7 @@ class Book extends Component {
       .catch(error => {
         //data is empty in case of error.
         this.setState({
-          data: []
+          sources: []
         });
       });
   }
@@ -43,14 +40,19 @@ class Book extends Component {
     this.service
       .getBuses(event.target.source.value, this.state.destId)
       .then(res => {
-        this.setState({ data: res.data.result });
-        if (res.data.result.length == 0) alert("No buses found");
+        if (res.data.result.length === 0) {
+          alert("No buses found");
+          this.setState({ data: [] });
+        } else {
+          this.setState({ data: res.data.result });
+        }
       })
       //Error handling
       .catch(error => {
         //data is empty in case of error.
         this.setState({
-          data: []
+          data: [],
+          scources: []
         });
       });
   };
@@ -76,13 +78,14 @@ class Book extends Component {
               value={this.state.selectedSource}
               onChange={e => this.setState({ selectedSource: e.target.value })}
             >
-              {this.state.sources.map((e, key) => {
-                return (
-                  <option key={e.sourceId} value={e.sourceId}>
-                    {e.name}
-                  </option>
-                );
-              })}
+              {this.state.sources.length > 0 &&
+                this.state.sources.map((e, key) => {
+                  return (
+                    <option key={e.sourceId} value={e.sourceId}>
+                      {e.name}
+                    </option>
+                  );
+                })}
             </select>
           </div>
           {/* travel date */}
@@ -100,7 +103,7 @@ class Book extends Component {
               name="date"
               type="date"
               required
-              dateFormat="yyyy-mm-dd"
+              dateformat="yyyy-mm-dd"
               // onChange={e => this.setState({ date: e.target.value })}
               onChange={date => this.setState({ date: date })}
             />

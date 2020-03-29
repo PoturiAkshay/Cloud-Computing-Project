@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import "./Purchase.css";
-import Service from "../../Service";
-import { Modal } from "react-bootstrap";
 
 class Purchase extends Component {
   constructor(props) {
@@ -20,7 +18,6 @@ class Purchase extends Component {
               </div>
               <div className="panel-body">
                 <form
-                  role="form"
                   method="post"
                   action="http://payment-loadbalancer-204535818.us-east-1.elb.amazonaws.com/makePayment"
                 >
@@ -69,11 +66,6 @@ class Purchase extends Component {
                         className="form-control"
                         name="cardName"
                         placeholder="Name on Card"
-                        type="text"
-<<<<<<< HEAD
-=======
-                        // value="a"
->>>>>>> 3da6e0c6da55d5ccd7a2c77e461af5f077a84a86
                         required
                         autoFocus
                       />
@@ -88,10 +80,6 @@ class Purchase extends Component {
                         name="cardNumber"
                         pattern="[\d| ]{16,22}"
                         placeholder="Card Number(16-22 digits)"
-<<<<<<< HEAD
-=======
-                        // value="1111111111111111"
->>>>>>> 3da6e0c6da55d5ccd7a2c77e461af5f077a84a86
                         required
                         autoFocus
                       />
@@ -105,10 +93,6 @@ class Purchase extends Component {
                       name="expiryDate"
                       pattern="\d\d/\d\d"
                       placeholder="Valid Thru (MM/YY)"
-<<<<<<< HEAD
-=======
-                      // value="00/00"
->>>>>>> 3da6e0c6da55d5ccd7a2c77e461af5f077a84a86
                       required
                     />
                   </div>
@@ -118,10 +102,6 @@ class Purchase extends Component {
                       type="password"
                       className="form-control"
                       name="cvCode"
-<<<<<<< HEAD
-=======
-                      // value="999"
->>>>>>> 3da6e0c6da55d5ccd7a2c77e461af5f077a84a86
                       pattern="\d{3,4}"
                       placeholder="CVC (3 digits)"
                       required
@@ -131,7 +111,6 @@ class Purchase extends Component {
                     <button
                       type="submit"
                       className="btn btn-success btn-lg btn-block"
-                      role="button"
                     >
                       Pay
                     </button>

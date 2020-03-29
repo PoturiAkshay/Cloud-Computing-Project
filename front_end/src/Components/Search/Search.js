@@ -17,7 +17,7 @@ class Search extends Component {
     this.service
       .getLocationData(event.target.location.value)
       .then(res => {
-        if (res.data.items.length == 0) alert("No data found");
+        if (res.data.items.length === 0) alert("No data found");
         this.setState({
           data: res.data.items
         });
@@ -45,16 +45,6 @@ class Search extends Component {
       destId: destId
     });
   };
-
-  componentDidMount() {
-    console.log(this.props.auth);
-  }
-  // componentWillUnmount(){}
-
-  // componentWillReceiveProps(){}
-  // shouldComponentUpdate(){}
-  // componentWillUpdate(){}
-  // componentDidUpdate(){}
 
   render() {
     return (

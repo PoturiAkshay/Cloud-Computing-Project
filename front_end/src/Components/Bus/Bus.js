@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import "./Bus.css";
 import Purchase from "../Purchase/Purchase";
 import "../../css/style.css";
@@ -13,13 +13,14 @@ class Bus extends Component {
   buyTickets = (e, index) => {
     e.preventDefault();
     this.props.isActive(index);
+
     this.toggleClass(index);
   };
 
   //close and open payment page
   toggleClass = index => {
     const currentState = this.state.active;
-    this.setState({ active: !currentState });
+    this.setState({ active: !currentState, activeItem: index });
   };
   // set number of passengers
   handleChange = e => {
@@ -33,11 +34,12 @@ class Bus extends Component {
       <li
         // populate bus data
         key={this.props.data.id}
-        className={
-          this.state.active && this.props.index == this.props.activeIndex
-            ? "list-group-item  m-3 "
-            : "list-group-item  m-3"
-        }
+        className="list-group-item  m-3"
+        // {
+        //   this.state.active && this.props.index === this.props.activeIndex
+        //     ? "list-group-item  m-3 active "
+        //     : "list-group-item  m-3"
+        // }
       >
         <form
           className=" m-1 "
@@ -59,8 +61,11 @@ class Bus extends Component {
                 <label htmlFor="num_passenger">Number of Passengers: </label>
                 <input
                   type="number"
-                  id="num_passenger"
                   name="num_passenger"
+                  disabled={
+                    this.state.active &&
+                    this.props.index === this.props.activeIndex
+                  }
                   min="1"
                   max={this.props.data.seats}
                   onChange={this.handleChange}
@@ -86,7 +91,7 @@ class Bus extends Component {
 
         <div
           className={
-            this.state.active && this.props.index == this.props.activeIndex
+            this.state.active && this.props.index === this.props.activeIndex
               ? "fadeIn"
               : "fadeOut"
           }
