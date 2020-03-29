@@ -69,7 +69,7 @@ def get_invoice(sourceId,destId):
     # cur.execute('select id,bus_no, arr_time,dep_time,capacity - num_bookings as seats from bus where source_id=%s and dest_id=%s and capacity <> num_bookings' %(sourceId,destId))
     cur.execute('''select b.id, a1.id as src_id, a2.id as dest_id ,a1.name as src,a2.name as dest,bus_no, arr_time,dep_time,(capacity - num_bookings) 
     as seats, b.price from bus b INNER JOIN address a1 ON a1.id=b.source_id INNER JOIN address a2 ON a2.id=b.dest_id 
-    where source_id=%s and dest_id=%s and capacity > num_bookings ''' %(sourceId,destId))
+    where source_id=%s and dest_id=%s and capacity > num_bookings''' %(sourceId,destId))
     mysql.connection.commit()
     rows=cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]

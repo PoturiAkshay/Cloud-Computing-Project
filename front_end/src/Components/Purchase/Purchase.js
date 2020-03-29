@@ -22,7 +22,7 @@ class Purchase extends Component {
                 <form
                   role="form"
                   method="post"
-                  action="http://127.0.0.1:5000/makePayment"
+                  action="http://payment-loadbalancer-204535818.us-east-1.elb.amazonaws.com/makePayment"
                 >
                   {/* hidden fields to post required data  */}
                   <input
@@ -70,6 +70,10 @@ class Purchase extends Component {
                         name="cardName"
                         placeholder="Name on Card"
                         type="text"
+<<<<<<< HEAD
+=======
+                        // value="a"
+>>>>>>> 3da6e0c6da55d5ccd7a2c77e461af5f077a84a86
                         required
                         autoFocus
                       />
@@ -84,6 +88,10 @@ class Purchase extends Component {
                         name="cardNumber"
                         pattern="[\d| ]{16,22}"
                         placeholder="Card Number(16-22 digits)"
+<<<<<<< HEAD
+=======
+                        // value="1111111111111111"
+>>>>>>> 3da6e0c6da55d5ccd7a2c77e461af5f077a84a86
                         required
                         autoFocus
                       />
@@ -97,6 +105,10 @@ class Purchase extends Component {
                       name="expiryDate"
                       pattern="\d\d/\d\d"
                       placeholder="Valid Thru (MM/YY)"
+<<<<<<< HEAD
+=======
+                      // value="00/00"
+>>>>>>> 3da6e0c6da55d5ccd7a2c77e461af5f077a84a86
                       required
                     />
                   </div>
@@ -106,6 +118,10 @@ class Purchase extends Component {
                       type="password"
                       className="form-control"
                       name="cvCode"
+<<<<<<< HEAD
+=======
+                      // value="999"
+>>>>>>> 3da6e0c6da55d5ccd7a2c77e461af5f077a84a86
                       pattern="\d{3,4}"
                       placeholder="CVC (3 digits)"
                       required

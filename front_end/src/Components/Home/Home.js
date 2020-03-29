@@ -34,12 +34,24 @@ class Home extends Component {
             <div className="float-right">
               {!this.props.auth.isAuthenticated && (
                 <div>
-                  <a href="/SignUp" className="button is-black">
+                <IndexLinkContainer to="/SignUp">
+                  <a className="nav-link" href="/">
+                  <strong>Sign Up</strong>
+                  </a>
+                </IndexLinkContainer>
+
+                <IndexLinkContainer to="/login">
+                  <a className="nav-link" href="/">
+                  <strong>Log In</strong>
+                  </a>
+                </IndexLinkContainer>
+
+                  {/* <a href="/SignUp" className="button is-black">
                     <strong>Sign Up</strong>
-                  </a>
-                  <a href="/login" className="button is-black">
+                  </a> */}
+                  {/* <a href="/login" className="button is-black">
                     <strong>Log In</strong>
-                  </a>
+                  </a> */}
                 </div>
               )}
               {this.props.auth.isAuthenticated && (
