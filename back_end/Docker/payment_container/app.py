@@ -35,7 +35,7 @@ def createInvoice(id, total):
 
 
 # payment gateway to verify card details
-@app.route('/makePayment')
+@app.route('/makePayment',methods=['POST'])
 def validate_card():
     
     req = request.args.get("request")

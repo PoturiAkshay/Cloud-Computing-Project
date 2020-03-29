@@ -9,8 +9,9 @@ const base_url = "https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev/";
 // const orders_url = "http://orders-loadbalancer-1449102389.us-east-1.elb.amazonaws.com/";
 // const analytics_url = "http://analytics-loadbalancer-653387818.us-east-1.elb.amazonaws.com/";
 const booking_url = "http://booking-loadbalancer-197985461.us-east-1.elb.amazonaws.com/";
-const payment_url = "http://payment-loadbalancer-204535818.us-east-1.elb.amazonaws.com/";
-const reg_url = "http://payment-loadbalancer-204535818.us-east-1.elb.amazonaws.com/";
+// const payment_url = "http://payment-loadbalancer-204535818.us-east-1.elb.amazonaws.com/";
+const payment_url = "http://127.0.0.1:5005/"
+const reg_url = "http://registration-loadbalancer-641393470.us-east-1.elb.amazonaws.com/";
 
 class Service {
   getLocationData = location => {
@@ -35,7 +36,7 @@ class Service {
     return axios.post(payment_url + "makePayment", data);
   };
   postUserDetails = user_data => {
-    return axios.post(reg_url + "registration/", user_data);
+    return axios.post(base_url + "registration/", user_data);
   };
 }
 export default Service;

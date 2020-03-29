@@ -22,7 +22,7 @@ class Purchase extends Component {
                 <form
                   role="form"
                   method="post"
-                  action="http://payment-loadbalancer-204535818.us-east-1.elb.amazonaws.com/makePayment"
+                  action="http://127.0.0.1:5005/makePayment"
                 >
                   {/* hidden fields to post required data  */}
                   <input

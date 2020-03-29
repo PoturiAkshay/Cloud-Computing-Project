@@ -16,8 +16,8 @@ app.config['MYSQL_DB'] = 'new_schema'
 
 mysql = MySQL(app)
 
-@app.route('/registration/<request>')
-def insertUserDetails(request):
+@app.route('/registration/', methods=['POST'])
+def insertUserDetails():
     data = request.get_json()
     cur = mysql.connection.cursor()
     cur.execute(
