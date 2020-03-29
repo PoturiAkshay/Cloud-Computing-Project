@@ -45,7 +45,7 @@ class Analytics extends Component {
   render() {
     return (
       <frameset scrolling="no" rows="50%,*,10%" cols="25%,*,25%">
-        <frame src="http://127.0.0.1:5000/analytics" />
+        <frame src="http://analytics-loadbalancer-653387818.us-east-1.elb.amazonaws.com/" />
 
         <noframes>
           Your browser does not support frames. To wiew this page please use
