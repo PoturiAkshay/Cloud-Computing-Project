@@ -36,6 +36,7 @@ class Orders extends Component {
   // componentDidUpdate(){}
 
   render() {
+    var start = 1
     return (
       <div className="container">
         {this.props.auth.isAuthenticated && (
@@ -54,7 +55,7 @@ class Orders extends Component {
               <tbody>
                 {this.state.data.map((row, index) => (
                   <tr key={row.id}>
-                    <td>{row.id}</td>
+                    <td>{index+start}</td>
                     <td>{row.date}</td>
                     <td>{row.source_id}</td>
                     <td>{row.dest_id}</td>
