@@ -186,7 +186,7 @@ public class RegistrationActivity extends AppCompatActivity {
                             JSONArray results=rows.getJSONArray(0);
 
                         }catch (JSONException e){
-                            Toast.makeText(RegistrationActivity.this,"Reg failed. Please check your card details.",Toast.LENGTH_LONG).show();
+//                            Toast.makeText(RegistrationActivity.this,"Reg failed. Please check your card details.",Toast.LENGTH_LONG).show();
                         }
                     }
                 },
