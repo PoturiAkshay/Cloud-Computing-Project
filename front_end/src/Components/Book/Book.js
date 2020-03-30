@@ -37,6 +37,7 @@ class Book extends Component {
   onSubmit = event => {
     event.preventDefault();
     // fetch buses from selected source to destination
+    console.log("date", this.state.date);
     this.service
       .getBuses(event.target.source.value, this.state.destId)
       .then(res => {
@@ -104,8 +105,8 @@ class Book extends Component {
               type="date"
               required
               dateformat="yyyy-mm-dd"
-              // onChange={e => this.setState({ date: e.target.value })}
-              onChange={date => this.setState({ date: date })}
+              onChange={e => this.setState({ date: e.target.value })}
+              // onChange={date => this.setState({ date: date })}
             />
           </div>
           <button type="submit" className="btn btn-primary">

@@ -5,7 +5,6 @@ import axios from "axios";
 // const base_url = "http://127.0.0.1:5000/";
 const base_url = "https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev/";
 
-
 class Service {
   getLocationData = location => {
     return axios.get(base_url + "search/" + location);
@@ -29,7 +28,7 @@ class Service {
     return axios.post(base_url + "makePayment", data);
   };
   postUserDetails = user_data => {
-    return axios.post(base_url + "registration/", user_data);
+     return axios.post(base_url + "registration/", user_data);
   };
 }
 export default Service;

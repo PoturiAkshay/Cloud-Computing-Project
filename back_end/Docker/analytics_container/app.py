@@ -20,15 +20,16 @@ app.config['MYSQL_DB'] = 'new_schema'
 
 mysql = MySQL(app)
 
-# prepare data to analyse bookings for each cities based on timeline
+#  prepare data to analyse bookings for each cities based on timeline
 def create_plot(data):
+
 	df = pd.DataFrame(data)
 	cities=df['city'].unique()
 	graphs=[]
 	
 	for city in cities:
 		cityData=df.loc[df['city']==city]
-		fig=go.Figure(go.Bar(
+		fig=go.Figure(go.Line(
 				x=cityData['date'], # assign x as the dataframe column 'x'
 				y=cityData['num_trips']
 				))
@@ -48,11 +49,12 @@ def create_plot(data):
 	graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
 	return [graphJSON,ids]
 
+
 # api to analyse the trends in data and create visulizations using plotly library
 @app.route('/')
 def getAnalytics():
     cur = mysql.connection.cursor()
-    cur.execute('select a1.name as city, t.date,count(*) as num_trips from trips t INNER JOIN address a1 ON a1.id=t.dest_id where t.dest_id  group by t.date,t.dest_id')
+    cur.execute('select a1.name as city, t.date,count(*) as num_trips from trips t INNER JOIN address a1 ON a1.id=t.dest_id where t.dest_id  group by t.date,t.dest_id ORDER BY DATE(t.date) DESC')
     mysql.connection.commit()
     rows = cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]

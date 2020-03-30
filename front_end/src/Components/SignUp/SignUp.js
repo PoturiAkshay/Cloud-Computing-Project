@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import FormErrors from "../../FormErrors";
 import Validate from "../../FormValidation";
 import { Auth } from "aws-amplify";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Service from "../../Service";
 
@@ -39,7 +38,7 @@ class SignUp extends Component {
 
   SubmitAction = async event => {
     event.preventDefault();
-
+    console.log(this.state.dob);
     // Form validation
     this.RemoveErrorState();
     const error = Validate(event, this.state);
@@ -65,9 +64,9 @@ class SignUp extends Component {
           phone_number: phone
         }
       });
-      console.log(signUpResponse);
       this.props.history.push("/SignupConfirmation");
       /////////Sending user data to server
+      
       const user_data = {
         email: email,
         password: password,
@@ -110,6 +109,7 @@ class SignUp extends Component {
   };
 
   handleChange = date => {
+    console.log(date);
     this.setState({
       dob: date
     });
@@ -137,7 +137,7 @@ class SignUp extends Component {
             </div>
 
             <div className="div field ">
-              <label htmlFor="sex" className="float-left  ">
+              <label htmlFor="sex" className="float-left">
                 Please select the Gender
               </label>
               <select
@@ -148,43 +148,36 @@ class SignUp extends Component {
               >
                 <option value="0"></option>
                 <option value="Male">Male</option>
-                <option value="Female">FeMale</option>
+                <option value="Female">Female</option>
                 <option value="Other">Other</option>
               </select>
             </div>
 
             {/* <p> Please Enter the date of birth</p> */}
+
+            <label htmlFor="dob" className="float-left">
+              Please enter the date of birth
+            </label>
             <div className="div field ">
-              <span>
-                <label htmlFor="dob" className="float-left">
-                  Please enter the date of birth
-                </label>
-                <input
-                  id="dob"
-                  max={
-                    new Date().getFullYear() +
-                    "-" +
-                    ("0" + (new Date().getMonth() + 1)).slice(-2) +
-                    "-" +
-                    ("0" + new Date().getDate()).slice(-2)
-                  }
-                  className="form-control"
-                  name="date"
-                  type="date"
-                  required
-                  dateformat="yyyy-mm-dd"
-                  selected={this.state.dob}
-                  onChange={this.handleChange}
-                />
-              </span>
               {/* <DatePicker
                 id="dob"
-                className="input"
+                className="input form-control"
                 dateFormat="yyyy-mm-dd"
                 maxDate={new Date()}
                 selected={this.state.dob}
                 onChange={this.handleChange}
               /> */}
+              <input
+                id="dob"
+                name="dob"
+                max={new Date()}
+                className="form-control"
+                type="date"
+                required
+                dateformat="yyyy-mm-dd"
+                selected={this.state.dob}
+                onChange={e => this.setState({ dob: e.target.value })}
+              />
             </div>
 
             <div className="field">
