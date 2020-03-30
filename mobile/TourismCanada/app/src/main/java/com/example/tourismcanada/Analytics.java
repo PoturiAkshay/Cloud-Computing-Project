@@ -17,7 +17,7 @@ public class Analytics extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.analytics);
         getIntent();
-        String URL="http://192.168.2.15:5000/analytics";
+        String URL="https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev/analytics";
         WebView browser = (WebView) findViewById(R.id.webviewID);
         WebSettings webSettings = browser.getSettings();
         webSettings.setJavaScriptEnabled(true);

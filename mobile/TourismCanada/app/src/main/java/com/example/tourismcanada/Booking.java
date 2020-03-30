@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -42,7 +44,7 @@ public class Booking extends AppCompatActivity {
     int passengers;
     String sourceName;
     int sourceID=7,destID=4;
-    String baseURL="http://192.168.2.15:5000",user_id;
+    String baseURL="https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev",user_id;
 
     TextView buses;
     private RequestQueue queue;
@@ -121,12 +123,16 @@ public class Booking extends AppCompatActivity {
         getBus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                passengers=Integer.parseInt(noOfPassengers.getText().toString());
                 buslist.clear();
                 getBusList.setAdapter(null);
                 buses.setText("");
                 buses.setGravity(Gravity.LEFT);
+                if(TextUtils.isEmpty(noOfPassengers.getText())){
+                    Toast.makeText(Booking.this,"No. of passengers is required",Toast.LENGTH_LONG).show();
+                }else if(TextUtils.isEmpty(date.getText().toString())){
+                    Toast.makeText(Booking.this,"Date is required",Toast.LENGTH_LONG).show();
+                }else {
+                passengers=Integer.parseInt(noOfPassengers.getText().toString());
                 //gotoPayment();
 //                jsonParse();
                 listadapter=new ArrayAdapter<String>(Booking.this, android.R.layout.simple_list_item_1,buslist);
@@ -188,7 +194,7 @@ public class Booking extends AppCompatActivity {
                 });
                 queue.add(jsonObject);
 
-            }
+            }}
         });
         getBusList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -208,25 +214,29 @@ public class Booking extends AppCompatActivity {
 
                     }
                 },year,month,day);
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
             }
         });
     }
     public void gotoPayment(int i){
-        Intent intent =new Intent(this, Payment.class);
-        intent.putExtra("source",sourceid[i]);
-        intent.putExtra("dest",dest[i]);
-        intent.putExtra("sourcename",sourcename[i]);
-        intent.putExtra("destname",destname[i]);
-        intent.putExtra("arrtime",arrtime[i]);
-        intent.putExtra("deptime",deptime[i]);
-        intent.putExtra("busno",busno[i]);
-        intent.putExtra("nopass",nopass[i]);
-        intent.putExtra("passengers",passengers);
-        intent.putExtra("user_id",user_id);
-        intent.putExtra("price",priceeach[i]);
-        intent.putExtra("bus_id",bus_id[i]);
-        intent.putExtra("date",date.getText().toString());
-        startActivity(intent);
+
+
+            Intent intent = new Intent(this, Payment.class);
+            intent.putExtra("source", sourceid[i]);
+            intent.putExtra("dest", dest[i]);
+            intent.putExtra("sourcename", sourcename[i]);
+            intent.putExtra("destname", destname[i]);
+            intent.putExtra("arrtime", arrtime[i]);
+            intent.putExtra("deptime", deptime[i]);
+            intent.putExtra("busno", busno[i]);
+            intent.putExtra("nopass", nopass[i]);
+            intent.putExtra("passengers", passengers);
+            intent.putExtra("user_id", user_id);
+            intent.putExtra("price", priceeach[i]);
+            intent.putExtra("bus_id", bus_id[i]);
+            intent.putExtra("date", date.getText().toString());
+            startActivity(intent);
+
     }
 }

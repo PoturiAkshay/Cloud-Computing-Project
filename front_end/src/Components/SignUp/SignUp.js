@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import FormErrors from "../../FormErrors";
 import Validate from "../../FormValidation";
 import { Auth } from "aws-amplify";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Service from "../../Service";
 
@@ -176,7 +175,6 @@ class SignUp extends Component {
                 required
                 dateformat="yyyy-mm-dd"
                 selected={this.state.dob}
-                // onChange={this.handleChange}
                 onChange={e => this.setState({ dob: e.target.value })}
               />
             </div>

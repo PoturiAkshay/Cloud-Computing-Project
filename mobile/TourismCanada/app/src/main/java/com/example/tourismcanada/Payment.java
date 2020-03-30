@@ -39,7 +39,8 @@ public class Payment extends AppCompatActivity {
     Button paymentButton;
     String date;
     private RequestQueue queue;
-    String baseURL = "http://192.168.2.15:5000",user_id;
+    //String baseURL = "https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev"
+    String baseURL = "https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev",user_id;
     int passengers, price, source_id, dest_id, bus_id;
 
 
@@ -60,7 +61,7 @@ public class Payment extends AppCompatActivity {
         expiryDateEditText = (EditText) findViewById(R.id.expiryDateID);
         cvvEditText = (EditText) findViewById(R.id.cvvID);
         totalPrice = (TextView) findViewById(R.id.totalPriceID);
-        totalPrice.setText(Integer.toString(passengers * price));
+        totalPrice.setText("$"+Integer.toString(passengers * price));
         queue = Volley.newRequestQueue(this);
         paymentButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +88,7 @@ public class Payment extends AppCompatActivity {
                             JSONArray results=rows.getJSONArray(0);
                             Intent intent =new Intent(Payment.this, Summary.class);
                             intent.putExtra("travel_date",date);
+                            System.out.println(results.getString(0));
                             intent.putExtra("user",results.getString(1));
                             intent.putExtra("booking_date",results.getString(2));
                             intent.putExtra("source",results.getString(3));
@@ -109,6 +111,7 @@ public class Payment extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(Payment.this,"Something went wrong. Please try again.",Toast.LENGTH_LONG).show();
                         Toast.makeText(Payment.this,error.toString(),Toast.LENGTH_LONG).show();
+                        error.printStackTrace();
                     }
                 }) {
             @Override

@@ -52,7 +52,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
             //Create Instance of GETAPIRequest and call it's
             //request() method
             GetAPIRequest getapiRequest=new GetAPIRequest();
-            String url="orderDetails/"+userID;
+            String url="orderdetails/"+userID;
             getapiRequest.request(OrderHistoryActivity.this, fetchSearchResultListener, url);
             Toast.makeText(OrderHistoryActivity.this,"GET API called",Toast.LENGTH_SHORT).show();
         }catch (Exception e){
