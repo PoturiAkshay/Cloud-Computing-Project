@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import FormErrors from "../../FormErrors";
 import Validate from "../../FormValidation";
-import { Auth } from 'aws-amplify';
+import { Auth } from "aws-amplify";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Service from "../../Service";
 
 class SignUp extends Component {
-  
   state = {
     email: "",
     password: "",
@@ -21,9 +20,9 @@ class SignUp extends Component {
       blankfield: false,
       passwordmatch: false
     }
-  }
+  };
 
-  constructor(){
+  constructor() {
     super();
     this.service = new Service();
   }
@@ -36,7 +35,7 @@ class SignUp extends Component {
         passwordmatch: false
       }
     });
-  }
+  };
 
   SubmitAction = async event => {
     event.preventDefault();
@@ -56,16 +55,15 @@ class SignUp extends Component {
     const { email, password, name, dob, sex, phone } = this.state;
 
     try {
-
       const signUpResponse = await Auth.signUp({
         username: email,
         password,
         attributes: {
           name: name,
-          'custom:Birthday': dob,
+          "custom:Birthday": dob,
           gender: sex,
           phone_number: phone
-          }
+        }
       });
       console.log(signUpResponse);
       this.props.history.push("/SignupConfirmation");
@@ -79,40 +77,37 @@ class SignUp extends Component {
         phone: phone
       };
       this.service
-      .postUserDetails(user_data)
-      .then(res => {
-        console.log(res.data.response);
-      })
-      //Error handling
-      .catch(error => {
-        //data is empty in case of error.
-        this.setState({
-          isLoading: false,
-          data: []
+        .postUserDetails(user_data)
+        .then(res => {
+          console.log(res.data.response);
+        })
+        //Error handling
+        .catch(error => {
+          //data is empty in case of error.
+          this.setState({
+            isLoading: false,
+            data: []
+          });
         });
-      });
       /////////
     } catch (error) {
       let err = null;
-      !error.message ? err = { "message": error } : err = error;
+      !error.message ? (err = { message: error }) : (err = error);
       this.setState({
         errors: {
           ...this.state.errors,
           cognito: err
         }
-      })
+      });
     }
-
   };
-
-  
 
   onInputChange = event => {
     this.setState({
-      [event.target.id]: event.target.value,
+      [event.target.id]: event.target.value
     });
     document.getElementById(event.target.id).classList.remove("is-danger");
-  }
+  };
 
   handleChange = date => {
     this.setState({
@@ -121,7 +116,6 @@ class SignUp extends Component {
   };
 
   render() {
-    
     return (
       <section className="section main">
         <div className="container">
@@ -129,7 +123,7 @@ class SignUp extends Component {
 
           <form onSubmit={this.SubmitAction}>
             <div className="field">
-              <p className="controll">
+              <p className="control">
                 <input
                   className="input"
                   type="text"
@@ -142,26 +136,55 @@ class SignUp extends Component {
               </p>
             </div>
 
-            <p> Please Select the Gender</p>
-            <div className="dropdown">
-              <p>
-                <select id="sex" value={this.state.sex} onChange={this.onInputChange}>
-                  <option value="0"></option>
-                  <option value="Male">Male</option>
-                  <option value="Female">FeMale</option>
-                  <option value="Other">Other</option>
-                </select>
-              </p>
+            <div className="div field ">
+              <label htmlFor="sex" className="float-left  ">
+                Please select the Gender
+              </label>
+              <select
+                id="sex"
+                value={this.state.sex}
+                onChange={this.onInputChange}
+                className="form-control"
+              >
+                <option value="0"></option>
+                <option value="Male">Male</option>
+                <option value="Female">FeMale</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
 
-            <p> Please Enter the date of birth</p>
-            <div className="div field">
-                <DatePicker id="dob" className="input"
-                dateFormat="yyyy-mm-dd"
-                  maxDate={new Date()}
+            {/* <p> Please Enter the date of birth</p> */}
+            <div className="div field ">
+              <span>
+                <label htmlFor="dob" className="float-left">
+                  Please enter the date of birth
+                </label>
+                <input
+                  id="dob"
+                  max={
+                    new Date().getFullYear() +
+                    "-" +
+                    ("0" + (new Date().getMonth() + 1)).slice(-2) +
+                    "-" +
+                    ("0" + new Date().getDate()).slice(-2)
+                  }
+                  className="form-control"
+                  name="date"
+                  type="date"
+                  required
+                  dateformat="yyyy-mm-dd"
                   selected={this.state.dob}
                   onChange={this.handleChange}
                 />
+              </span>
+              {/* <DatePicker
+                id="dob"
+                className="input"
+                dateFormat="yyyy-mm-dd"
+                maxDate={new Date()}
+                selected={this.state.dob}
+                onChange={this.handleChange}
+              /> */}
             </div>
 
             <div className="field">
@@ -226,9 +249,7 @@ class SignUp extends Component {
             </div>
             <div className="div field">
               <p className="control">
-                <button className="button is-primary">
-                  Sign Up
-                </button>
+                <button className="button is-primary">Sign Up</button>
               </p>
             </div>
           </form>

@@ -157,7 +157,7 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     public void saveUser() {
-        String baseURL = "http://192.168.0.3:5000";
+        String baseURL = "https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev";
         String URL = baseURL + "/registration/";
         RequestQueue queue = Volley.newRequestQueue(this);
         Map<String, String> params = new HashMap<>();
