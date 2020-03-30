@@ -5,9 +5,6 @@ import axios from "axios";
 // const base_url = "http://127.0.0.1:5000/";
 const base_url = "https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev/";
 
-const payment_url = "http://127.0.0.1:5005/";
-const reg_url =
-  "http://registration-loadbalancer-641393470.us-east-1.elb.amazonaws.com/";
 
 class Service {
   getLocationData = location => {
@@ -29,7 +26,7 @@ class Service {
     return axios.get(base_url + "getBuses/" + sourceId + "/" + destId);
   };
   makePayment = data => {
-    return axios.post(payment_url + "makePayment", data);
+    return axios.post(base_url + "makePayment", data);
   };
   postUserDetails = user_data => {
     return axios.post(base_url + "registration/", user_data);

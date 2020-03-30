@@ -19,7 +19,7 @@ class Purchase extends Component {
               <div className="panel-body">
                 <form
                   method="post"
-                  action="http://127.0.0.1:5005/makePayment"
+                  action="https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev/makePayment"
                 >
                   {/* hidden fields to post required data  */}
                   <input
