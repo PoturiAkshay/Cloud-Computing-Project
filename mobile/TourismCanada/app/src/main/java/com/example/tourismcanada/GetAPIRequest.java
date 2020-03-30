@@ -25,7 +25,7 @@ public class GetAPIRequest {
             listener.onFetchStart();
         }
         //base server URL
-        String baseUrl="http://192.168.2.15:5000/";
+        String baseUrl="https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev/";
         String url = baseUrl + ApiURL;
         Log.d("Gaurav: ", url);
         JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.GET, url, null,
