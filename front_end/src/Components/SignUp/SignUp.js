@@ -66,6 +66,7 @@ class SignUp extends Component {
       });
       this.props.history.push("/SignupConfirmation");
       /////////Sending user data to server
+      
       const user_data = {
         email: email,
         password: password,
