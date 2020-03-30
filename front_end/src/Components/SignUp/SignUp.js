@@ -38,7 +38,7 @@ class SignUp extends Component {
 
   SubmitAction = async event => {
     event.preventDefault();
-
+    console.log(this.state.dob);
     // Form validation
     this.RemoveErrorState();
     const error = Validate(event, this.state);
@@ -70,7 +70,7 @@ class SignUp extends Component {
         email: email,
         password: password,
         name: name,
-        dob: toString(dob),
+        dob: dob,
         sex: sex,
         phone: phone
       };

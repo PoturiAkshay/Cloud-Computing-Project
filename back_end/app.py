@@ -50,7 +50,7 @@ def getOrderDetails(id):
 @app.route('/analytics', methods=['GET'])
 def getAnalytics():
     cur = mysql.connection.cursor()
-    cur.execute('select a1.name as city, t.date,count(*) as num_trips from trips t INNER JOIN address a1 ON a1.id=t.dest_id where t.dest_id  group by t.date,t.dest_id')
+    cur.execute('select a1.name as city, t.date,count(*) as num_trips from trips t INNER JOIN address a1 ON a1.id=t.dest_id where t.dest_id  group by t.date,t.dest_id ORDER BY DATE(t.date) DESC')
     mysql.connection.commit()
     rows = cur.fetchall()
     result = [dict(zip([key[0] for key in cur.description], row)) for row in rows]
@@ -111,7 +111,13 @@ def create_plot(data):
                 x=cityData['date'], # assign x as the dataframe column 'x'
                 y=cityData['num_trips']
                 )]
-        graphs.append(graph)
+
+        data=go.Data(graph)
+        layout=go.Layout(title=city, xaxis={'title':'Date of booking'}, yaxis={'title':'Number of bookings'})
+        figure=go.Figure(data=data,layout=layout)
+       
+
+        graphs.append(figure)
     ids = [cities[i] for i, _ in enumerate(graphs)]
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
     return [graphJSON,ids]

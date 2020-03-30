@@ -29,8 +29,8 @@ class Analytics extends Component {
   render() {
     return (
       <frameset scrolling="no" rows="50%,*,10%" cols="25%,*,25%">
-        <frame src="https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev/analytics" />
-
+        {/* <frame src="https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev/analytics" /> */}
+        <frame src="http://localhost:5000/analytics" />
         <noframes>
           Your browser does not support frames. To wiew this page please use
           supporting br

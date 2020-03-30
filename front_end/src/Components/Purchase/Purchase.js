@@ -17,10 +17,7 @@ class Purchase extends Component {
                 <h3 className="panel-title">Payment Details</h3>
               </div>
               <div className="panel-body">
-                <form
-                  method="post"
-                  action="https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev/makePayment"
-                >
+                <form method="post" action="http://127.0.0.1:5000/makePayment">
                   {/* hidden fields to post required data  */}
                   <input
                     type="hidden"
