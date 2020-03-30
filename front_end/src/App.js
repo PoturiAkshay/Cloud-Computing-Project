@@ -62,7 +62,8 @@ class App extends Component {
       user: this.state.user,
       email: this.state.email,
       setAuthStatus: this.setAuthStatus,
-      setUser: this.setUser
+      setUser: this.setUser,
+      setEmail: this.setEmail
     };
     return (
       // Navigation between different components.

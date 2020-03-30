@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Validate from "../../FormValidation";
 import {Auth} from "aws-amplify";
 import FormErrors from "../../FormErrors";
+import LoginConfirmation from "./LoginConfirmation";
 
 class Login extends Component {
   state = {
@@ -41,7 +42,9 @@ class Login extends Component {
       const user = await Auth.signIn(this.state.username, this.state.password);
       console.log("obj", user);
        this.props.auth.setUser(user);
+       this.props.auth.setEmail(this.state.username);
       this.props.history.push("/LoginConfirmation");
+      
     }catch(error){
       let err=null;
       !error.message ? err = {"message":error} : err=error;

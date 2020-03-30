@@ -17,7 +17,7 @@ class Purchase extends Component {
                 <h3 className="panel-title">Payment Details</h3>
               </div>
               <div className="panel-body">
-                <form method="post" action="http://127.0.0.1:5000/makePayment">
+                <form method="post" action="http://127.0.0.1:5005/makePayment">
                   {/* hidden fields to post required data  */}
                   <input
                     type="hidden"
