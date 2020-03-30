@@ -13,7 +13,6 @@ class Bus extends Component {
   buyTickets = (e, index) => {
     e.preventDefault();
     this.props.isActive(index);
-
     this.toggleClass(index);
   };
 

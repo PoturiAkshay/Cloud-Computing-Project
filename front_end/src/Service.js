@@ -6,8 +6,6 @@ import axios from "axios";
 const base_url = "https://dbe6st6u2k.execute-api.us-east-1.amazonaws.com/dev/";
 
 const payment_url = "http://127.0.0.1:5005/";
-const reg_url =
-  "http://registration-loadbalancer-641393470.us-east-1.elb.amazonaws.com/";
 
 class Service {
   getLocationData = location => {

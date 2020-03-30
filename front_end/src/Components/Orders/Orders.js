@@ -11,11 +11,12 @@ class Orders extends Component {
 
   // componentWillMount(){}
   componentDidMount() {
-    console.log(this.props.auth);
     this.service
       .getOrderDeatils(this.props.auth.email)
       .then(res => {
-        this.setState({ isLoading: false, data: res.data.items });
+        if (res.data.items.length === 0) {
+          alert("No orders found");
+        } else this.setState({ isLoading: false, data: res.data.items });
       })
       //Error handling
       .catch(error => {
@@ -25,18 +26,10 @@ class Orders extends Component {
           data: []
         });
       });
-    //console.log(this.props.auth.email);
   }
 
-  // componentWillUnmount(){}
-
-  // componentWillReceiveProps(){}
-  // shouldComponentUpdate(){}
-  // componentWillUpdate(){}
-  // componentDidUpdate(){}
-
   render() {
-    var start = 1
+    var start = 1;
     return (
       <div className="container">
         {this.props.auth.isAuthenticated && (
@@ -55,7 +48,7 @@ class Orders extends Component {
               <tbody>
                 {this.state.data.map((row, index) => (
                   <tr key={row.id}>
-                    <td>{index+start}</td>
+                    <td>{index + start}</td>
                     <td>{row.date}</td>
                     <td>{row.source_id}</td>
                     <td>{row.dest_id}</td>
