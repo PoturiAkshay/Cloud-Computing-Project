@@ -22,20 +22,31 @@ mysql = MySQL(app)
 
 # prepare data to analyse bookings for each cities based on timeline
 def create_plot(data):
-    df = pd.DataFrame(data)
-    cities=df['city'].unique()
-    graphs=[]
-    for city in cities:
-        cityData=df.loc[df['city']==city]
-        graph = [
-            go.Line(
-                x=cityData['date'], # assign x as the dataframe column 'x'
-                y=cityData['num_trips']
-                )]
-        graphs.append(graph)
-    ids = [cities[i] for i, _ in enumerate(graphs)]
-    graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
-    return [graphJSON,ids]
+	df = pd.DataFrame(data)
+	cities=df['city'].unique()
+	graphs=[]
+	
+	for city in cities:
+		cityData=df.loc[df['city']==city]
+		fig=go.Figure(go.Bar(
+				x=cityData['date'], # assign x as the dataframe column 'x'
+				y=cityData['num_trips']
+				))
+		fig.update_layout(
+		title="Analysis of no. of trips to "+city,
+		xaxis_title="Journey Date",
+		yaxis_title="No. of Trips",
+		font=dict(
+			family="Courier New, monospace",
+			size=18,
+			color="#7f7f7f"
+		))
+		fig.layout.paper_bgcolor='rgba(0,0,0,0)'
+		fig.layout.plot_bgcolor='rgba(0,0,0,0)'
+		graphs.append(fig)
+	ids = [cities[i] for i, _ in enumerate(graphs)]
+	graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
+	return [graphJSON,ids]
 
 # api to analyse the trends in data and create visulizations using plotly library
 @app.route('/')
