@@ -57,7 +57,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersHold
         }
 
         public void setTime(String time) {
-            timeView.setText("Journey Date: "+ time);
+            timeView.setText("Booking Time: "+ time);
         }
 
         public void setPassengers(int passengers) {

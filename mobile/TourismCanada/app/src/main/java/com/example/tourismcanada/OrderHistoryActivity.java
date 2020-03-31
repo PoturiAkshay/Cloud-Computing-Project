@@ -41,6 +41,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         ordersAdapter = new OrdersAdapter(orderArrayList);
         recyclerView.setAdapter(ordersAdapter);
+        orderArrayList.clear();
         noOrderText.setVisibility(View.VISIBLE);
         //TODO: get current userID and pass it in the method
         getApiCall(user_id);
@@ -53,6 +54,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
             GetAPIRequest getapiRequest=new GetAPIRequest();
             String url="orderdetails/"+userID;
             getapiRequest.request(OrderHistoryActivity.this, fetchSearchResultListener, url);
+            Toast.makeText(OrderHistoryActivity.this,"GET API called",Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -65,10 +67,6 @@ public class OrderHistoryActivity extends AppCompatActivity {
             //Fetch Complete. Now stop progress bar  or loader
             //you started in onFetchStart
             RequestQueueService.cancelProgressDialog();
-            int previousSize = orderArrayList.size();
-            orderArrayList.clear();
-            ordersAdapter.notifyItemRangeRemoved(0, previousSize);
-            Log.d("Gaurav: order history:", String.valueOf(data));
             try {
                 //Now check result sent by our GETAPIRequest class
                 if (data != null) {
@@ -89,13 +87,13 @@ public class OrderHistoryActivity extends AppCompatActivity {
                         } else {
                             noOrderText.setVisibility(View.VISIBLE);
                         }
-                        ordersAdapter.notifyItemRangeInserted(0, orderArrayList.size());
+                        ordersAdapter.notifyDataSetChanged();
                     }
                 } else {
-                    RequestQueueService.showAlert("Nothing to show", OrderHistoryActivity.this);
+                    RequestQueueService.showAlert("Error! No data fetched", OrderHistoryActivity.this);
                 }
             }catch (Exception e){
-                RequestQueueService.showAlert("Fetching results", OrderHistoryActivity.this);
+                RequestQueueService.showAlert("Something went wrong", OrderHistoryActivity.this);
                 e.printStackTrace();
             }
         }

@@ -70,7 +70,7 @@ public class GetAPIRequest {
                     }
                     if (listener != null) listener.onFetchFailure(errorMessage);
                 } else {
-                    listener.onFetchFailure("No search results. Try different search");
+                    listener.onFetchFailure("Something went wrong. Please try again later");
                 }
             }
         });

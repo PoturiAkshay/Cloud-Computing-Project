@@ -64,9 +64,9 @@ public class LocationsAdapter extends RecyclerView.Adapter<LocationsAdapter.Loca
                 }
                 else {
                     Intent intent = new Intent(mContext.getApplicationContext(), Booking.class);
-                    intent.putExtra("destId", location.getAddress_id());
+                    intent.putExtra("destId", location.getId());
                     intent.putExtra("user_id", user_id);
-                    Log.d("user id: and dest_id: ",user_id + " " + location.getAddress_id());
+                    Log.d("user id: ",user_id);
                     mContext.startActivity(intent);
                 }
             }
