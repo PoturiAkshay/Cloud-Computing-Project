@@ -34,7 +34,7 @@ def create_plot(data):
 				y=cityData['num_trips']
 				))
 		fig.update_layout(
-		title="Analysis of no. of trips to "+city,
+		title=city,
 		xaxis_title="Journey Date",
 		yaxis_title="No. of Trips",
 		font=dict(
