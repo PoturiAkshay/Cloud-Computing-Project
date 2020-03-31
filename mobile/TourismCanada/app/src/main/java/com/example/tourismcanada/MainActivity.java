@@ -173,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
             SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
                     SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE);
             suggestions.saveRecentQuery(query, null);
-            locationArrayList.clear();
             noSearchText.setVisibility(View.VISIBLE);
             getApiCall(query);
         }
@@ -186,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
             GetAPIRequest getapiRequest=new GetAPIRequest();
             String url="search/"+query;
             getapiRequest.request(MainActivity.this, fetchSearchResultListener, url);
-            Toast.makeText(MainActivity.this,"GET API called",Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -199,8 +197,12 @@ public class MainActivity extends AppCompatActivity {
             //Fetch Complete. Now stop progress bar  or loader
             //you started in onFetchStart
             RequestQueueService.cancelProgressDialog();
+            int previousSize = locationArrayList.size();
+            locationArrayList.clear();
+            locationsAdapter.notifyItemRangeRemoved(0, previousSize);
             try {
                 //Now check result sent by our GETAPIRequest class
+                Log.d("Gaurav: search results:", String.valueOf(data));
                 if (data != null) {
                     if (data.has("items")) {
                         JSONArray jsonArray = data.getJSONArray("items");
@@ -222,13 +224,14 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             noSearchText.setVisibility(View.VISIBLE);
                         }
-                        locationsAdapter.notifyDataSetChanged();
+                        //locationsAdapter.notifyDataSetChanged();
+                        locationsAdapter.notifyItemRangeInserted(0, locationArrayList.size());
                     }
                 } else {
-                    RequestQueueService.showAlert("Error! No data fetched", MainActivity.this);
+                    RequestQueueService.showAlert("Nothing to show", MainActivity.this);
                 }
             }catch (Exception e){
-                RequestQueueService.showAlert("Something went wrong", MainActivity.this);
+                RequestQueueService.showAlert("No search results", MainActivity.this);
                 e.printStackTrace();
             }
         }

@@ -100,6 +100,7 @@ public class Payment extends AppCompatActivity {
                             intent.putExtra("unit_price",results.getInt(9));
                             intent.putExtra("total",results.getInt(10));
                             startActivity(intent);
+                            finish();
                         }catch (JSONException e){
                             e.printStackTrace();
                             Toast.makeText(Payment.this,"Payment failed. Please check your card details.",Toast.LENGTH_LONG).show();

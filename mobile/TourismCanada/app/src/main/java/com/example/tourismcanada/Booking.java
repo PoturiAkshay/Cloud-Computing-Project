@@ -237,6 +237,6 @@ public class Booking extends AppCompatActivity {
             intent.putExtra("bus_id", bus_id[i]);
             intent.putExtra("date", date.getText().toString());
             startActivity(intent);
-
+            finish();
     }
 }
