@@ -186,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
             GetAPIRequest getapiRequest=new GetAPIRequest();
             String url="search/"+query;
             getapiRequest.request(MainActivity.this, fetchSearchResultListener, url);
-            Toast.makeText(MainActivity.this,"GET API called",Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -228,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
                     RequestQueueService.showAlert("Error! No data fetched", MainActivity.this);
                 }
             }catch (Exception e){
-                RequestQueueService.showAlert("Something went wrong", MainActivity.this);
+                RequestQueueService.showAlert("Please try again", MainActivity.this);
                 e.printStackTrace();
             }
         }

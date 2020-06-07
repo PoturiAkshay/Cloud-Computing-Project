@@ -54,7 +54,6 @@ public class OrderHistoryActivity extends AppCompatActivity {
             GetAPIRequest getapiRequest=new GetAPIRequest();
             String url="orderdetails/"+userID;
             getapiRequest.request(OrderHistoryActivity.this, fetchSearchResultListener, url);
-            Toast.makeText(OrderHistoryActivity.this,"GET API called",Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -93,7 +92,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
                     RequestQueueService.showAlert("Error! No data fetched", OrderHistoryActivity.this);
                 }
             }catch (Exception e){
-                RequestQueueService.showAlert("Something went wrong", OrderHistoryActivity.this);
+                RequestQueueService.showAlert("Please try again.", OrderHistoryActivity.this);
                 e.printStackTrace();
             }
         }

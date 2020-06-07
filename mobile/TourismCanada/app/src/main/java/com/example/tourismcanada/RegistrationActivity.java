@@ -193,7 +193,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(RegistrationActivity.this,"Something went wrong. Please try again.",Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegistrationActivity.this,"Check your email",Toast.LENGTH_LONG).show();
                     }
                 }) {
 

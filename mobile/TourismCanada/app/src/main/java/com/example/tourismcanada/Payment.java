@@ -109,7 +109,7 @@ public class Payment extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Payment.this,"Something went wrong. Please try again.",Toast.LENGTH_LONG).show();
+                        Toast.makeText(Payment.this,"Please try again.",Toast.LENGTH_LONG).show();
                         Toast.makeText(Payment.this,error.toString(),Toast.LENGTH_LONG).show();
                         error.printStackTrace();
                     }
